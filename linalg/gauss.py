@@ -1,9 +1,4 @@
-from collections import defaultdict
-from typing import List, Set, Dict
-
 import numpy as np
-
-from linalg.determinant import get_determinant
 
 
 class LinearSystem:
@@ -60,25 +55,8 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def apply_pivoting(self) -> "LinearSystemInplaceTransformer":
-        assert self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
-
-        for i in range(self._linear_system.A.shape[0]):
-            if not self._is_zero(self._linear_system.A[i, i]):
-                continue
-            found = False
-            for j in range(self._linear_system.A.shape[1]):
-                if j != i and not self._is_zero(self._linear_system.A[i, j]):
-                    self.add_rows(j, i, 1)
-                    found = True
-                    break
-            if not found:
-                raise ValueError(f"No allowed rows for column {i}")
-
-        return self
-
     def apply_gauss(self) -> "LinearSystemInplaceTransformer":
-        if self._is_zero(get_determinant(self._linear_system.A)):
+        if self._is_zero(np.linalg.det(self._linear_system.A)):
             raise ValueError("Matrix is singular")
 
         self.apply_pivoting()
@@ -87,6 +65,23 @@ class LinearSystemInplaceTransformer:
 
         for i in range(self._linear_system.A.shape[0]):
             self.mul_row(i, 1/self._linear_system.A[i, i])
+
+        return self
+
+    def apply_pivoting(self) -> "LinearSystemInplaceTransformer":
+        assert self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
+
+        for i in range(self._linear_system.A.shape[0]):
+            if not self._is_zero(self._linear_system.A[i, i]):
+                continue
+            found = False
+            for j in range(self._linear_system.A.shape[1]):
+                if j != i and not self._is_zero(self._linear_system.A[j, i]):
+                    self.add_rows(j, i, 1)
+                    found = True
+                    break
+            if not found:
+                raise ValueError(f"No allowed rows for column {i}")
 
         return self
 
