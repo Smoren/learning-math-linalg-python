@@ -49,7 +49,6 @@ class LinearSystemInplaceTransformer:
 
     def add_rows(self, index_from: int, index_to: int, mult: float) -> "LinearSystemInplaceTransformer":
         self._check_row_index_pair(index_from, index_to)
-        assert mult != 0
 
         self._linear_system.A[index_to] += mult * self._linear_system.A[index_from]
         self._linear_system.B[index_to] += mult * self._linear_system.B[index_from]
