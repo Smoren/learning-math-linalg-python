@@ -1,8 +1,10 @@
 import numpy as np
 
 from linalg.determinant import get_determinant
+from linalg.gauss import LinearSystem, LinearSystemInplaceTransformer
 
-if __name__ == '__main__':
+
+def test_determinant():
     a = np.array([
         [1, 2, 3, 4],
         [4, 3, 5, 1],
@@ -15,4 +17,33 @@ if __name__ == '__main__':
     actual = get_determinant(a)
     expected = np.linalg.det(a)
 
-    print(actual, expected, abs(expected-actual))
+    print(actual, expected, abs(expected - actual))
+
+
+def test_gauss():
+    A = np.array([
+        [1, 2, 3, 4],
+        [4, 3, 5, 1],
+        [5, 6, 7, 8],
+        [6, 5, 1, 2],
+    ])
+
+    B = np.array([
+        [1],
+        [2],
+        [3],
+        [4],
+    ])
+
+    linear_system = LinearSystem(A, B)
+    print(linear_system)
+    print()
+
+    transformer = LinearSystemInplaceTransformer(linear_system)
+    transformer.mul_row(2, 5)
+    print(linear_system)
+
+
+if __name__ == '__main__':
+    # test_determinant()
+    test_gauss()
