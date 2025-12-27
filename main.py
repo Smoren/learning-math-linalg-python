@@ -1,6 +1,6 @@
 import numpy as np
 
-from linalg.determinant import get_minor, get_determinant
+from linalg.determinant import get_determinant
 
 if __name__ == '__main__':
     a = np.array([
@@ -10,5 +10,9 @@ if __name__ == '__main__':
         [6, 5, 1, 2],
     ])
 
-    m = get_determinant(a)
-    print(m)
+    a = np.random.rand(5, 5)
+
+    actual = get_determinant(a)
+    expected = np.linalg.det(a)
+
+    print(actual, expected, abs(expected-actual))
