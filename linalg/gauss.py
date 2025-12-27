@@ -1,4 +1,9 @@
+from collections import defaultdict
+from typing import List, Set, Dict
+
 import numpy as np
+
+from linalg.determinant import get_determinant
 
 
 class LinearSystem:
@@ -55,7 +60,28 @@ class LinearSystemInplaceTransformer:
 
         return self
 
+    def apply_pivoting(self) -> "LinearSystemInplaceTransformer":
+        assert self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
+
+        for i in range(self._linear_system.A.shape[0]):
+            if not self._is_zero(self._linear_system.A[i, i]):
+                continue
+            found = False
+            for j in range(self._linear_system.A.shape[1]):
+                if j != i and not self._is_zero(self._linear_system.A[i, j]):
+                    self.add_rows(j, i, 1)
+                    found = True
+                    break
+            if not found:
+                raise ValueError(f"No allowed rows for column {i}")
+
+        return self
+
     def apply_gauss(self) -> "LinearSystemInplaceTransformer":
+        if self._is_zero(get_determinant(self._linear_system.A)):
+            raise ValueError("Matrix is singular")
+
+        self.apply_pivoting()
         self.apply_gauss_bottom()
         self.apply_gauss_top()
 
@@ -89,3 +115,6 @@ class LinearSystemInplaceTransformer:
         self._check_row_index(index_from)
         self._check_row_index(index_to)
         assert index_from != index_to
+
+    def _is_zero(self, x: float) -> bool:
+        return abs(x) <= np.finfo(self._linear_system.A.dtype).eps

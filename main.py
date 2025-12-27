@@ -22,18 +22,24 @@ def test_determinant():
 
 def test_gauss():
     A = np.array([
-        [1, 2, 3, 4],
-        [4, 3, 5, 1],
-        [5, 6, 7, 8],
-        [6, 5, 1, 2],
-    ], dtype=np.float32)
+        [0, 2, 3, 4],
+        [4, 0, 5, 1],
+        [5, 6, 0, 8],
+        [6, 5, 1, 0],
+    ], dtype=np.float64)
+    # A = np.array([
+    #     [0, 2, 0, 0],
+    #     [4, 0, 0, 0],
+    #     [0, 0, 0, 8],
+    #     [0, 0, 1, 0],
+    # ], dtype=np.float64)
 
     B = np.array([
         [1],
         [2],
         [3],
         [4],
-    ], dtype=np.float32)
+    ], dtype=np.float64)
 
     linear_system = LinearSystem(A, B)
     print(linear_system)
