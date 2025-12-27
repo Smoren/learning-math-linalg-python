@@ -26,21 +26,21 @@ def test_gauss():
         [4, 3, 5, 1],
         [5, 6, 7, 8],
         [6, 5, 1, 2],
-    ])
+    ], dtype=np.float32)
 
     B = np.array([
         [1],
         [2],
         [3],
         [4],
-    ])
+    ], dtype=np.float32)
 
     linear_system = LinearSystem(A, B)
     print(linear_system)
     print()
 
     transformer = LinearSystemInplaceTransformer(linear_system)
-    transformer.mul_row(2, 5)
+    transformer.apply_gauss()
     print(linear_system)
 
 

@@ -18,27 +18,10 @@ class LinearSystem:
     def __repr__(self) -> str:
         all_strings = []
 
-        for row in self.A:
-            all_strings.extend([f"{num:.6g}" if isinstance(num, float) else str(num) for num in row.tolist()])
+        for i in range(self.A.shape[0]):
+            all_strings.append(" ".join(map(lambda x: f"{x:10.6g}", self.A[i].tolist())) + " | " + f"{self.B[i, 0]:10.6g}")
 
-        for num in self.B:
-            all_strings.append(f"{num:.6g}" if isinstance(num, float) else str(num))
-
-        max_width = max(len(s) for s in all_strings) + 2  # +2 для отступов
-
-        result = []
-        for i, row in enumerate(self.A):
-            a_part = " ".join(
-                [f"{num:{max_width}.6g}" if isinstance(num, float) else f"{num:>{max_width}}"
-                 for num in row.tolist()]
-            )
-
-            b_num = self.B[i][0]
-            b_str = f"{b_num:{max_width}.6g}" if isinstance(b_num, float) else f"{b_num:>{max_width}}"
-
-            result.append(f"{a_part}  | {b_str}")
-
-        return "\n".join(result)
+        return "\n".join(all_strings)
 
 
 class LinearSystemInplaceTransformer:
@@ -71,6 +54,33 @@ class LinearSystemInplaceTransformer:
         self._linear_system.B[[index_from, index_to]] = self._linear_system.B[[index_to, index_from]]
 
         return self
+
+    def apply_gauss(self) -> "LinearSystemInplaceTransformer":
+        self.apply_gauss_bottom()
+        self.apply_gauss_top()
+
+        for i in range(self._linear_system.A.shape[0]):
+            self.mul_row(i, 1/self._linear_system.A[i, i])
+
+        return self
+
+    def apply_gauss_bottom(self) -> "LinearSystemInplaceTransformer":
+        for i in range(self._linear_system.A.shape[0]):
+            for j in range(i+1, self._linear_system.A.shape[0]):
+                mult = -self._linear_system.A[j, i] / self._linear_system.A[i, i]
+                self.add_rows(i, j, mult)
+
+        return self
+
+    def apply_gauss_top(self) -> "LinearSystemInplaceTransformer":
+        for i in range(self._linear_system.A.shape[0]):
+            for j in range(i+1, self._linear_system.A.shape[0]):
+                i_, j_ = self._linear_system.A.shape[0] - i - 1, self._linear_system.A.shape[0] - j - 1
+                mult = -self._linear_system.A[j_, i_] / self._linear_system.A[i_, i_]
+                self.add_rows(i_, j_, mult)
+
+        return self
+
 
     def _check_row_index(self, index: int) -> None:
         assert 0 <= index < self._linear_system.A.shape[0]
