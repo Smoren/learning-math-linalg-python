@@ -92,23 +92,33 @@ class EchelonMatrixAnalyser(MatrixAnalyser):
 
     def is_reduced_echelon(self) -> bool:
         """Проверяет, имеет ли матрица улучшенный (приведенный) ступенчатый вид."""
+        # Получаем множество столбцов, содержащих опорные (ведущие) элементы
+        # В ступенчатой матрице каждый такой столбец содержит ровно один опорный элемент
         pivot_columns = self.get_pivot_columns()
 
+        # Проверяем каждый столбец с опорным элементом
         for col_index in pivot_columns:
+            # Получаем все ненулевые элементы в текущем столбце
             non_zeros = self._matrix[:, col_index][~is_zero(self._matrix[:, col_index])]
+
+            # Проверяем два условия RREF для текущего столбца:
+            # 1. non_zeros.shape[0] != 1: в столбце должен быть ровно один ненулевой элемент
+            #    (опорный элемент, все остальные должны быть нулями)
+            # 2. np.isclose(non_zeros, 1).sum() != 1: этот единственный ненулевой элемент
+            #    должен быть равен 1 (с учетом численной погрешности)
             if non_zeros.shape[0] != 1 or np.isclose(non_zeros, 1).sum() != 1:
                 return False
 
+        # Если все столбцы с опорными элементами прошли проверку,
+        # матрица является приведенной ступенчатой (RREF)
         return True
 
 
 class LinearSystemAnalyser:
     _linear_system: LinearSystem
-    _matrix_analyser: MatrixAnalyser
 
     def __init__(self, linear_system: LinearSystem):
         self._linear_system = linear_system
-        self._matrix_analyser = MatrixAnalyser(linear_system.A)
 
     def is_homogeneous(self) -> bool:
         """Проверяет, является ли система однородной (B = 0)."""
@@ -116,29 +126,35 @@ class LinearSystemAnalyser:
 
     def is_square(self) -> bool:
         """Проверяет, является ли система квадратной (NxN)."""
-        return self._matrix_analyser.is_square()
+        return MatrixAnalyser(self._linear_system.A).is_square()
 
     def is_singular(self) -> bool:
         """Проверяет, является ли система вырожденной (определитель A равен 0)."""
-        return not self._matrix_analyser.is_singular()
+        return not MatrixAnalyser(self._linear_system.A).is_singular()
 
     def is_echelon(self) -> bool:
         """Проверяет, является ли система ступенчатой."""
-        return self._matrix_analyser.is_echelon()
+        return MatrixAnalyser(self._linear_system.A).is_echelon()
+
+    def is_reduced_echelon(self) -> bool:
+        """Проверяет, является ли система улучшенной (приведенной) ступенчатой."""
+        return MatrixAnalyser(self._linear_system.A).is_echelon() and EchelonMatrixAnalyser(self._linear_system.A).is_reduced_echelon()
 
 
 class EchelonLinearSystemAnalyzer(LinearSystemAnalyser):
-    _matrix_analyser: EchelonMatrixAnalyser
-
     def __init__(self, linear_system: LinearSystem):
         super().__init__(linear_system)
-        self._matrix_analyser = EchelonMatrixAnalyser(linear_system.A)
+        if not MatrixAnalyser(linear_system.A).is_echelon():
+            raise ValueError("Matrix is not in echelon form")
 
     def get_pivot_columns(self) -> Set[int]:
-        return self._matrix_analyser.get_pivot_columns()
+        """Возвращает множество индексов столбцов, содержащих опорные элементы."""
+        return EchelonMatrixAnalyser(self._linear_system.A).get_pivot_columns()
 
     def get_rank(self) -> int:
-        return self._matrix_analyser.get_rank()
+        """Возвращает ранг системы (количество опорных элементов)."""
+        return EchelonMatrixAnalyser(self._linear_system.A).get_rank()
 
     def is_reduced_echelon(self) -> bool:
-        return self._matrix_analyser.is_reduced_echelon()
+        """Проверяет, является ли система улучшенной (приведенной) ступенчатой."""
+        return EchelonMatrixAnalyser(self._linear_system.A).is_reduced_echelon()
