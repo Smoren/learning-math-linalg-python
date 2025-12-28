@@ -54,3 +54,16 @@ def mul_matrices(lhs: np.ndarray, rhs: np.ndarray) -> np.ndarray:
             result[i, j] = cell_value
 
     return result
+
+
+def transpose_matrix(matrix: np.ndarray) -> np.ndarray:
+    """Транспонирует матрицу (N×M -> M×N)"""
+    # В результате транспонирования количество строк становится количеством столбцов и наоборот
+    result = np.zeros((matrix.shape[1], matrix.shape[0]))
+
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            # Меняем местами строки и столбцы
+            result[j, i] = matrix[i, j]
+
+    return result
