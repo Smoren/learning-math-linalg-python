@@ -71,6 +71,38 @@ class MatrixAnalyser:
         # Если все строки прошли проверку, матрица имеет ступенчатый вид
         return True
 
+    def is_inverse_left(self, another: np.ndarray) -> bool:
+        """Проверяет, является ли матрица левым обратным для другой матрицы."""
+        # Проверим, что матрицы можно перемножать
+        if self._matrix.shape[1] != another.shape[0]:
+            return False
+
+        # Проверим, что результат будет квадратной матрицей
+        if self._matrix.shape[0] != another.shape[1]:
+            return False
+
+        # Перемножим матрицы
+        result = mul_matrices(self._matrix, another)
+
+        # Проверим, что результат - единичная матрица
+        return SquareMatrixAnalyser(result).is_identity()
+
+    def is_inverse_right(self, another: np.ndarray) -> bool:
+        """Проверяет, является ли матрица правым обратным для другой матрицы."""
+        # Проверим, что матрицы можно перемножать
+        if self._matrix.shape[1] != another.shape[0]:
+            return False
+
+        # Проверим, что результат будет квадратной матрицей
+        if self._matrix.shape[0] != another.shape[1]:
+            return False
+
+        # Перемножим матрицы
+        result = mul_matrices(another, self._matrix)
+
+        # Проверим, что результат - единичная матрица
+        return SquareMatrixAnalyser(result).is_identity()
+
 
 class SquareMatrixAnalyser(MatrixAnalyser):
     def __init__(self, matrix: np.ndarray):
@@ -111,11 +143,13 @@ class SquareMatrixAnalyser(MatrixAnalyser):
 
     def is_inverse_left(self, another: np.ndarray) -> bool:
         """Проверяет, является ли матрица левым обратным для другой матрицы."""
+        assert another.shape == self._matrix.shape
         result = mul_matrices(self._matrix, another)
         return SquareMatrixAnalyser(result).is_identity()
 
     def is_inverse_right(self, another: np.ndarray) -> bool:
         """Проверяет, является ли матрица правым обратным для другой матрицы."""
+        assert another.shape == self._matrix.shape
         result = mul_matrices(another, self._matrix)
         return SquareMatrixAnalyser(result).is_identity()
 
