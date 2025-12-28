@@ -109,6 +109,16 @@ class SquareMatrixAnalyser(MatrixAnalyser):
                 return False
         return True
 
+    def is_inverse_left(self, another: np.ndarray) -> bool:
+        """Проверяет, является ли матрица левым обратным для другой матрицы."""
+        result = mul_matrices(self._matrix, another)
+        return SquareMatrixAnalyser(result).is_identity()
+
+    def is_inverse_right(self, another: np.ndarray) -> bool:
+        """Проверяет, является ли матрица правым обратным для другой матрицы."""
+        result = mul_matrices(another, self._matrix)
+        return SquareMatrixAnalyser(result).is_identity()
+
     def get_trace(self) -> float:
         """Возвращает след матрицы (сумма диагональных элементов)."""
         result = 0
