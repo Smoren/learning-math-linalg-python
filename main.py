@@ -2,6 +2,7 @@ import numpy as np
 
 from linalg.analyzers import MatrixAnalyser, EchelonMatrixAnalyser
 from linalg.determinant import get_determinant
+from linalg.operations import add_matrices, mul_matrix, mul_matrices
 from linalg.system import LinearSystem
 from linalg.transformers import LinearSystemGaussTransformer
 
@@ -95,8 +96,33 @@ def test_analyzers():
     # print(analyser.is_reduced_echelon())
     print(analyser.is_reduced_echelon())
 
+
+def test_operations():
+    a = np.array([
+        [1, 2],
+        [3, 4],
+    ])
+    b = np.array([
+        [5, 6],
+        [7, 8],
+    ])
+    print(add_matrices(a, b))
+    print(mul_matrix(a, 2))
+
+    a = np.array([
+        [1, 2],
+        [4, 5],
+        [7, 8],
+    ])
+    b = np.array([
+        [5, 6, 7, 8],
+        [7, 8, 9, 10],
+    ])
+    print(mul_matrices(a, b))
+
+
 if __name__ == '__main__':
     # test_determinant()
     # test_gauss()
-    test_analyzers()
-
+    # test_analyzers()
+    test_operations()
