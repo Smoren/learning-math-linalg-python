@@ -30,7 +30,10 @@ def mul_matrix(matrix, multiplier: float) -> np.ndarray:
     return result
 
 def mul_matrices(lhs: np.ndarray, rhs: np.ndarray) -> np.ndarray:
-    """Умножение двух матриц"""
+    """
+    Умножение двух матриц m×k на k×n
+    Cij = sum(Air * Brj) for r in range(k)
+    """
     # Количество столбцов левой матрицы должно равняться количеству строк правой матрицы
     assert lhs.shape[1] == rhs.shape[0]
 
