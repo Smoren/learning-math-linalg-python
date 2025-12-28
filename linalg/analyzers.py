@@ -11,10 +11,13 @@ class LinearSystemBaseAnalyser:
         self._linear_system = linear_system
 
     def is_homogeneous(self) -> bool:
+        """Проверяет, является ли система однородной (B = 0)."""
         return np.all(is_zero(self._linear_system.B))
 
     def is_square(self) -> bool:
+        """Проверяет, является ли система квадратной (NxN)."""
         return self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
 
     def is_singular(self) -> bool:
+        """Проверяет, является ли система вырожденной (определитель A равен 0)."""
         return not self.is_square() or is_zero(np.linalg.det(self._linear_system.A))
