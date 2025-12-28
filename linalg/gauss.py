@@ -59,7 +59,7 @@ class LinearSystemInplaceTransformer:
         if self._is_zero(np.linalg.det(self._linear_system.A)):
             raise ValueError("Matrix is singular")
 
-        self.apply_pivoting()
+        # self.apply_pivoting()
         self.apply_gauss_bottom()
         self.apply_gauss_top()
 
@@ -86,22 +86,60 @@ class LinearSystemInplaceTransformer:
         return self
 
     def apply_gauss_bottom(self) -> "LinearSystemInplaceTransformer":
-        for i in range(self._linear_system.A.shape[0]):
-            for j in range(i+1, self._linear_system.A.shape[0]):
-                mult = -self._linear_system.A[j, i] / self._linear_system.A[i, i]
-                self.add_rows(i, j, mult)
+        n = self._linear_system.A.shape[0]
+
+        for i in range(n):
+            pivot = self._linear_system.A[i, i]
+
+            # Проверяем диагональный элемент перед использованием
+            if self._is_zero(pivot):
+                # Пытаемся исправить ситуацию локально
+                self._local_fix_pivot(i)
+                pivot = self._linear_system.A[i, i]
+
+                # Если все равно ноль - система вырождена
+                if self._is_zero(pivot):
+                    raise ValueError(f"Zero pivot encountered at position ({i},{i}) after fixing")
+
+            for j in range(i + 1, n):
+                mult = -self._linear_system.A[j, i] / pivot
+                # Пропускаем операцию если множитель слишком мал
+                if not self._is_zero(mult):
+                    self.add_rows(i, j, mult)
 
         return self
 
     def apply_gauss_top(self) -> "LinearSystemInplaceTransformer":
-        for i in range(self._linear_system.A.shape[0]):
-            for j in range(i+1, self._linear_system.A.shape[0]):
-                i_, j_ = self._linear_system.A.shape[0] - i - 1, self._linear_system.A.shape[0] - j - 1
-                mult = -self._linear_system.A[j_, i_] / self._linear_system.A[i_, i_]
-                self.add_rows(i_, j_, mult)
+        n = self._linear_system.A.shape[0]
+
+        for i in range(n - 1, -1, -1):
+            pivot = self._linear_system.A[i, i]
+
+            if self._is_zero(pivot):
+                raise ValueError(f"Zero pivot at position ({i},{i}) during back substitution")
+
+            for j in range(i - 1, -1, -1):
+                mult = -self._linear_system.A[j, i] / pivot
+                if not self._is_zero(mult):
+                    self.add_rows(i, j, mult)
 
         return self
 
+    def _local_fix_pivot(self, row_index: int) -> None:
+        n = self._linear_system.A.shape[0]
+
+        # Ищем строку ниже с ненулевым элементом в текущем столбце
+        for j in range(row_index + 1, n):
+            if not self._is_zero(self._linear_system.A[j, row_index]):
+                self.add_rows(j, row_index, 1)
+                return
+
+        # Если не нашли ниже, ищем выше
+        for j in range(row_index):
+            print(f"Checking row {j} for pivot fix")
+            if not self._is_zero(self._linear_system.A[j, row_index]):
+                self.add_rows(j, row_index, 1)
+                return
 
     def _check_row_index(self, index: int) -> None:
         assert 0 <= index < self._linear_system.A.shape[0]
