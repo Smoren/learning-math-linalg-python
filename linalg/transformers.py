@@ -124,5 +124,8 @@ class LinearSystemUniversalGaussTransformer(LinearSystemBaseTransformer):
     0 0 1 * 0 * | *
     0 0 0 0 1 * | *
     0 0 0 0 0 0 | *
+
+    Сколько решений (0, 1, бесконечно много)
+    Выразить главные переменные через свободные
     """
     pass
