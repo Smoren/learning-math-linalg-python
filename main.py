@@ -2,7 +2,8 @@ import numpy as np
 
 from linalg.analyzers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser
 from linalg.determinant import get_determinant
-from linalg.examples import example_add_row, example_swap_rows
+from linalg.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
+    example_transform_matrix_mul_row
 from linalg.operations import add_matrices, mul_matrix, mul_matrices
 from linalg.system import LinearSystem
 from linalg.transformers import LinearSystemGaussTransformer
@@ -159,4 +160,5 @@ if __name__ == '__main__':
     # test_operations()
     # test_linear_system_analyzer()
     # example_add_row()
-    example_swap_rows()
+    # example_transform_matrix_swap_rows()
+    example_transform_matrix_mul_row()
