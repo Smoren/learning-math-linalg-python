@@ -18,6 +18,14 @@ class MatrixBaseAnalyser:
         """Проверяет, является ли матрица вырожденной (определитель равен 0)."""
         return not self.is_square() or is_zero(np.linalg.det(self._matrix))
 
+    def is_echelon(self) -> bool:
+        """Проверяет, является ли матрица ступенчатой."""
+        for i in range(self._matrix.shape[0]):
+            for j in range(i):
+                if not is_zero(self._matrix[i, j]):
+                    return False
+        return True
+
 
 class LinearSystemBaseAnalyser:
     _linear_system: LinearSystem
