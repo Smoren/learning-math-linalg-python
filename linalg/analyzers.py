@@ -73,6 +73,30 @@ class SquareMatrixAnalyser(MatrixAnalyser):
         if not self.is_square():
             raise ValueError("Matrix is not square")
 
+    def is_diagonal(self) -> bool:
+        """Проверяет, является ли матрица диагональной (имеет только диагональные элементы, остальные нули)."""
+        for i in range(self._matrix.shape[0]):
+            for j in range(self._matrix.shape[1]):
+                # Если элемент не диагональный и не равен нулю, матрица не диагональная
+                if i != j and not is_zero(self._matrix[i, j]):
+                    return False
+        return True
+
+    def is_identity(self) -> bool:
+        """Проверяет, является ли матрица единичной (диагональная, все диагональные элементы равны 1)."""
+        if not self.is_diagonal():
+            return False
+
+        for i in range(self._matrix.shape[0]):
+            if not np.isclose(self._matrix[i, i], 1):
+                return False
+
+        return True
+
+    def is_zero(self) -> bool:
+        """Проверяет, является ли матрица нулевой (все элементы равны 0)."""
+        return np.all(is_zero(self._matrix))
+
     def get_trace(self) -> float:
         """Возвращает след матрицы (сумма диагональных элементов)."""
         result = 0
