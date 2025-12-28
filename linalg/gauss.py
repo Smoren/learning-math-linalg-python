@@ -60,8 +60,8 @@ class LinearSystemInplaceTransformer:
             raise ValueError("Matrix is singular")
 
         # self.apply_pivoting()
-        self.apply_gauss_bottom()
-        self.apply_gauss_top()
+        self.apply_gauss_forward()
+        self.apply_gauss_backward()
 
         for i in range(self._linear_system.A.shape[0]):
             self.mul_row(i, 1/self._linear_system.A[i, i])
@@ -85,7 +85,7 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def apply_gauss_bottom(self) -> "LinearSystemInplaceTransformer":
+    def apply_gauss_forward(self) -> "LinearSystemInplaceTransformer":
         n = self._linear_system.A.shape[0]
 
         for i in range(n):
@@ -100,7 +100,7 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def apply_gauss_top(self) -> "LinearSystemInplaceTransformer":
+    def apply_gauss_backward(self) -> "LinearSystemInplaceTransformer":
         n = self._linear_system.A.shape[0]
 
         for i in range(n-1, -1, -1):
