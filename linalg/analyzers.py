@@ -1,10 +1,12 @@
+from typing import Set
+
 import numpy as np
 
 from linalg.system import LinearSystem
 from linalg.utils import is_zero
 
 
-class MatrixBaseAnalyser:
+class MatrixAnalyser:
     _matrix: np.ndarray
 
     def __init__(self, matrix: np.ndarray):
@@ -39,6 +41,12 @@ class MatrixBaseAnalyser:
             # Счетчик ведущих нулей в текущей строке
             zero_count = 0
 
+            # Пропускаем нулевые строки
+            if np.all(is_zero(self._matrix[row_index])):
+                # Если строка состоит только из нулей, то ведущих нулей столько же, сколько столбцов
+                prev_zero_count = cols
+                continue
+
             # Подсчитываем количество нулей до первого ненулевого элемента в строке
             for col_index in range(cols):
                 # Если встречаем ненулевой элемент, прерываем подсчет
@@ -58,25 +66,49 @@ class MatrixBaseAnalyser:
         # Если все строки прошли проверку, матрица имеет ступенчатый вид
         return True
 
-    def is_reduced_echelon(self) -> bool:
-        """Проверяет, является ли матрица улучшенным ступенчатым видом."""
+
+class EchelonMatrixAnalyser(MatrixAnalyser):
+    def __init__(self, matrix: np.ndarray):
+        super().__init__(matrix)
         if not self.is_echelon():
-            return False
-        for i in range(self._matrix.shape[0]):
-            if not is_zero(self._matrix[i, i]):
-                for j in range(i + 1, self._matrix.shape[1]):
-                    if not is_zero(self._matrix[i, j]):
-                        return False
+            raise ValueError("Matrix is not in echelon form")
+
+    def get_pivot_columns(self) -> Set[int]:
+        """Возвращает множество индексов столбцов, содержащих опорные элементы."""
+        pivot_columns = set()
+
+        last_col_index = 0
+        for row_index in range(self._matrix.shape[0]):
+            for col_index in range(last_col_index, self._matrix.shape[1]):
+                if not is_zero(self._matrix[row_index, col_index]):
+                    pivot_columns.add(col_index)
+                    last_col_index = col_index
+                    break
+        return pivot_columns
+
+    def get_rank(self) -> int:
+        """Возвращает ранг матрицы (количество опорных элементов)."""
+        return len(self.get_pivot_columns())
+
+    def is_reduced_echelon(self) -> bool:
+        """Проверяет, имеет ли матрица улучшенный (приведенный) ступенчатый вид."""
+        pivot_columns = self.get_pivot_columns()
+
+        for col_index in pivot_columns:
+            non_zeros = self._matrix[:, col_index][~is_zero(self._matrix[:, col_index])]
+            if non_zeros.shape[0] != 1 or np.isclose(non_zeros, 1).sum() != 1:
+                return False
+
         return True
 
 
 class LinearSystemBaseAnalyser:
     _linear_system: LinearSystem
-    _matrix_analyser: MatrixBaseAnalyser
+    _matrix_analyser: MatrixAnalyser
 
     def __init__(self, linear_system: LinearSystem):
         self._linear_system = linear_system
-        self._matrix_analyser = MatrixBaseAnalyser(linear_system.A)
+        self._matrix_analyser = MatrixAnalyser(linear_system.A)
 
     def is_homogeneous(self) -> bool:
         """Проверяет, является ли система однородной (B = 0)."""
