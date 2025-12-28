@@ -22,6 +22,10 @@ class MatrixAnalyser:
             raise ValueError("Only square matrices can be singular")
         return is_zero(np.linalg.det(self._matrix))
 
+    def is_zero(self) -> bool:
+        """Проверяет, является ли матрица нулевой (все элементы равны 0)."""
+        return np.all(is_zero(self._matrix))
+
     def is_echelon(self) -> bool:
         """Проверяет, является ли матрица ступенчатой."""
         # Получаем размеры матрицы
@@ -93,9 +97,16 @@ class SquareMatrixAnalyser(MatrixAnalyser):
 
         return True
 
-    def is_zero(self) -> bool:
-        """Проверяет, является ли матрица нулевой (все элементы равны 0)."""
-        return np.all(is_zero(self._matrix))
+    def is_scalar(self) -> bool:
+        """Проверяет, является ли матрица скалярной (диагональная, все диагональные элементы равны между собой)."""
+        if not self.is_diagonal():
+            return False
+
+        first_diagonal_element = self._matrix[0, 0]
+        for i in range(self._matrix.shape[0]):
+            if not np.isclose(self._matrix[i, i], first_diagonal_element):
+                return False
+        return True
 
     def get_trace(self) -> float:
         """Возвращает след матрицы (сумма диагональных элементов)."""
