@@ -26,6 +26,17 @@ class MatrixBaseAnalyser:
                     return False
         return True
 
+    def is_reduced_echelon(self) -> bool:
+        """Проверяет, является ли матрица улучшенным ступенчатым видом."""
+        if not self.is_echelon():
+            return False
+        for i in range(self._matrix.shape[0]):
+            if not is_zero(self._matrix[i, i]):
+                for j in range(i + 1, self._matrix.shape[1]):
+                    if not is_zero(self._matrix[i, j]):
+                        return False
+        return True
+
 
 class LinearSystemBaseAnalyser:
     _linear_system: LinearSystem
