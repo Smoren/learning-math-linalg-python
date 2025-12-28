@@ -59,7 +59,7 @@ class LinearSystemInplaceTransformer:
         if self._is_zero(np.linalg.det(self._linear_system.A)):
             raise ValueError("Matrix is singular")
 
-        self.apply_pivoting()
+        # self.apply_pivoting()
         self.apply_gauss_bottom()
         self.apply_gauss_top()
 
@@ -89,6 +89,10 @@ class LinearSystemInplaceTransformer:
         n = self._linear_system.A.shape[0]
 
         for i in range(n):
+            # Если диагональный элемент равен нулю
+            if self._is_zero(self._linear_system.A[i, i]):
+                self._fix_pivot_down(i)
+
             pivot = self._linear_system.A[i, i]
             for j in range(i + 1, n):
                 mult = -self._linear_system.A[j, i] / pivot
@@ -106,6 +110,20 @@ class LinearSystemInplaceTransformer:
                 self.add_rows(i, j, mult)
 
         return self
+
+    def _fix_pivot_down(self, row_index: int) -> None:
+        n = self._linear_system.A.shape[0]
+
+        # То среди следующих строк
+        for i in range(row_index + 1, n):
+            # ищем первую, где в соответствующем столбце не ноль
+            if not self._is_zero(self._linear_system.A[i, row_index]):
+                # Имеем право менять местами, так как в последующих строках уже должны быть нули по предыдущим столбцам
+                self.swap_rows(row_index, i)
+                break
+        else:
+            # Если не нашли, то матрица вырождена
+            raise ValueError(f"No allowed rows for column {row_index}")
 
     def _check_row_index(self, index: int) -> None:
         assert 0 <= index < self._linear_system.A.shape[0]
