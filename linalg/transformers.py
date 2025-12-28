@@ -1,6 +1,7 @@
 import numpy as np
 
 from linalg.system import LinearSystem
+from linalg.utils import is_zero
 
 
 class LinearSystemBaseTransformer:
@@ -42,13 +43,10 @@ class LinearSystemBaseTransformer:
         self._check_row_index(index_to)
         assert index_from != index_to
 
-    def _is_zero(self, x):
-        return np.abs(x) <= np.finfo(self._linear_system.A.dtype).eps
-
 
 class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
     def apply_gauss(self) -> "LinearSystemSquareGaussTransformer":
-        if self._is_zero(np.linalg.det(self._linear_system.A)):
+        if is_zero(np.linalg.det(self._linear_system.A)):
             raise ValueError("Matrix is singular")
 
         # self._apply_pivoting()
@@ -64,11 +62,11 @@ class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
         assert self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
 
         for i in range(self._linear_system.A.shape[0]):
-            if not self._is_zero(self._linear_system.A[i, i]):
+            if not is_zero(self._linear_system.A[i, i]):
                 continue
             found = False
             for j in range(self._linear_system.A.shape[1]):
-                if j != i and not self._is_zero(self._linear_system.A[j, i]):
+                if j != i and not is_zero(self._linear_system.A[j, i]):
                     self.add_rows(j, i, 1)
                     found = True
                     break
@@ -80,7 +78,7 @@ class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
 
         for i in range(n):
             # Если диагональный элемент равен нулю
-            if self._is_zero(self._linear_system.A[i, i]):
+            if is_zero(self._linear_system.A[i, i]):
                 self._fix_pivot_forward(i)
 
             pivot = self._linear_system.A[i, i]
@@ -107,7 +105,7 @@ class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
         # То среди следующих строк
         for i in range(row_index + 1, n):
             # ищем первую, где в соответствующем столбце не ноль
-            if not self._is_zero(self._linear_system.A[i, row_index]):
+            if not is_zero(self._linear_system.A[i, row_index]):
                 # Имеем право менять местами, так как в последующих строках уже должны быть нули по предыдущим столбцам
                 self.swap_rows(row_index, i)
                 break
