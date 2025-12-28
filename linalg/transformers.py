@@ -42,8 +42,8 @@ class LinearSystemBaseTransformer:
         self._check_row_index(index_to)
         assert index_from != index_to
 
-    def _is_zero(self, x: float) -> bool:
-        return abs(x) <= np.finfo(self._linear_system.A.dtype).eps
+    def _is_zero(self, x):
+        return np.abs(x) <= np.finfo(self._linear_system.A.dtype).eps
 
 
 class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
