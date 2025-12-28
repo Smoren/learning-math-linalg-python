@@ -67,6 +67,20 @@ class MatrixAnalyser:
         return True
 
 
+class SquareMatrixAnalyser(MatrixAnalyser):
+    def __init__(self, matrix: np.ndarray):
+        super().__init__(matrix)
+        if not self.is_square():
+            raise ValueError("Matrix is not square")
+
+    def get_trace(self) -> float:
+        """Возвращает след матрицы (сумма диагональных элементов)."""
+        result = 0
+        for i in range(self._matrix.shape[0]):
+            result += self._matrix[i, i]
+        return result
+
+
 class EchelonMatrixAnalyser(MatrixAnalyser):
     def __init__(self, matrix: np.ndarray):
         super().__init__(matrix)
