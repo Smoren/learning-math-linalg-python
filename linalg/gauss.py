@@ -91,7 +91,7 @@ class LinearSystemInplaceTransformer:
         for i in range(n):
             # Если диагональный элемент равен нулю
             if self._is_zero(self._linear_system.A[i, i]):
-                self._fix_pivot_down(i)
+                self._fix_pivot_forward(i)
 
             pivot = self._linear_system.A[i, i]
             for j in range(i + 1, n):
@@ -111,7 +111,7 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def _fix_pivot_down(self, row_index: int) -> None:
+    def _fix_pivot_forward(self, row_index: int) -> None:
         n = self._linear_system.A.shape[0]
 
         # То среди следующих строк
