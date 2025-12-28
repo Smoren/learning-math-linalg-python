@@ -141,16 +141,14 @@ class SquareMatrixAnalyser(MatrixAnalyser):
                 return False
         return True
 
-    def is_inverse_left(self, another: np.ndarray) -> bool:
-        """Проверяет, является ли матрица левым обратным для другой матрицы."""
+    def is_inverse(self, another: np.ndarray) -> bool:
+        """
+        Проверяет, является ли матрица обратной для другой матрицы.
+        Достаточно проверить только слева, потому что: LA = E, AR = E => L = R
+        Доказательство: LAR = (LA)R = ER = R; LAR = L(AR) = LE = L => L = R
+        """
         assert another.shape == self._matrix.shape
         result = mul_matrices(self._matrix, another)
-        return SquareMatrixAnalyser(result).is_identity()
-
-    def is_inverse_right(self, another: np.ndarray) -> bool:
-        """Проверяет, является ли матрица правым обратным для другой матрицы."""
-        assert another.shape == self._matrix.shape
-        result = mul_matrices(another, self._matrix)
         return SquareMatrixAnalyser(result).is_identity()
 
     def get_trace(self) -> float:
