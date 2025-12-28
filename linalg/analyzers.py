@@ -102,7 +102,7 @@ class EchelonMatrixAnalyser(MatrixAnalyser):
         return True
 
 
-class LinearSystemBaseAnalyser:
+class LinearSystemAnalyser:
     _linear_system: LinearSystem
     _matrix_analyser: MatrixAnalyser
 
@@ -121,3 +121,24 @@ class LinearSystemBaseAnalyser:
     def is_singular(self) -> bool:
         """Проверяет, является ли система вырожденной (определитель A равен 0)."""
         return not self._matrix_analyser.is_singular()
+
+    def is_echelon(self) -> bool:
+        """Проверяет, является ли система ступенчатой."""
+        return self._matrix_analyser.is_echelon()
+
+
+class EchelonLinearSystemAnalyzer(LinearSystemAnalyser):
+    _matrix_analyser: EchelonMatrixAnalyser
+
+    def __init__(self, linear_system: LinearSystem):
+        super().__init__(linear_system)
+        self._matrix_analyser = EchelonMatrixAnalyser(linear_system.A)
+
+    def get_pivot_columns(self) -> Set[int]:
+        return self._matrix_analyser.get_pivot_columns()
+
+    def get_rank(self) -> int:
+        return self._matrix_analyser.get_rank()
+
+    def is_reduced_echelon(self) -> bool:
+        return self._matrix_analyser.is_reduced_echelon()
