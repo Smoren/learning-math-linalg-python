@@ -1,36 +1,15 @@
 import numpy as np
 
-
-class LinearSystem:
-    A: np.ndarray
-    B: np.ndarray
-
-    def __init__(self, A: np.ndarray, B: np.ndarray):
-        assert A.ndim == 2 and B.ndim == 2
-        assert A.shape[0] == B.shape[0] and B.shape[1] == 1
-
-        self.A = A
-        self.B = B
-
-    def copy(self) -> "LinearSystem":
-        return LinearSystem(self.A.copy(), self.B.copy())
-
-    def __repr__(self) -> str:
-        all_strings = []
-
-        for i in range(self.A.shape[0]):
-            all_strings.append(" ".join(map(lambda x: f"{x:10.6g}", self.A[i].tolist())) + " | " + f"{self.B[i, 0]:10.6g}")
-
-        return "\n".join(all_strings)
+from linalg.system import LinearSystem
 
 
-class LinearSystemInplaceTransformer:
+class LinearSystemBaseTransformer:
     _linear_system: LinearSystem
 
     def __init__(self, linear_system: LinearSystem):
         self._linear_system = linear_system
 
-    def add_rows(self, index_from: int, index_to: int, mult: float) -> "LinearSystemInplaceTransformer":
+    def add_rows(self, index_from: int, index_to: int, mult: float) -> "LinearSystemBaseTransformer":
         self._check_row_index_pair(index_from, index_to)
 
         self._linear_system.A[index_to] += mult * self._linear_system.A[index_from]
@@ -38,7 +17,7 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def mul_row(self, index: int, mult: float) -> "LinearSystemInplaceTransformer":
+    def mul_row(self, index: int, mult: float) -> "LinearSystemBaseTransformer":
         self._check_row_index(index)
         assert mult != 0
 
@@ -47,7 +26,7 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def swap_rows(self, index_from: int, index_to: int) -> "LinearSystemInplaceTransformer":
+    def swap_rows(self, index_from: int, index_to: int) -> "LinearSystemBaseTransformer":
         self._check_row_index_pair(index_from, index_to)
 
         self._linear_system.A[[index_from, index_to]] = self._linear_system.A[[index_to, index_from]]
@@ -55,20 +34,33 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def apply_gauss(self) -> "LinearSystemInplaceTransformer":
+    def _check_row_index(self, index: int) -> None:
+        assert 0 <= index < self._linear_system.A.shape[0]
+
+    def _check_row_index_pair(self, index_from: int, index_to: int) -> None:
+        self._check_row_index(index_from)
+        self._check_row_index(index_to)
+        assert index_from != index_to
+
+    def _is_zero(self, x: float) -> bool:
+        return abs(x) <= np.finfo(self._linear_system.A.dtype).eps
+
+
+class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
+    def apply_gauss(self) -> "LinearSystemSquareGaussTransformer":
         if self._is_zero(np.linalg.det(self._linear_system.A)):
             raise ValueError("Matrix is singular")
 
-        # self.apply_pivoting()
-        self.apply_gauss_forward()
-        self.apply_gauss_backward()
+        # self._apply_pivoting()
+        self._apply_gauss_forward()
+        self._apply_gauss_backward()
 
         for i in range(self._linear_system.A.shape[0]):
             self.mul_row(i, 1/self._linear_system.A[i, i])
 
         return self
 
-    def apply_pivoting(self) -> "LinearSystemInplaceTransformer":
+    def _apply_pivoting(self):
         assert self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
 
         for i in range(self._linear_system.A.shape[0]):
@@ -83,9 +75,7 @@ class LinearSystemInplaceTransformer:
             if not found:
                 raise ValueError(f"No allowed rows for column {i}")
 
-        return self
-
-    def apply_gauss_forward(self) -> "LinearSystemInplaceTransformer":
+    def _apply_gauss_forward(self):
         n = self._linear_system.A.shape[0]
 
         for i in range(n):
@@ -100,7 +90,7 @@ class LinearSystemInplaceTransformer:
 
         return self
 
-    def apply_gauss_backward(self) -> "LinearSystemInplaceTransformer":
+    def _apply_gauss_backward(self) -> "LinearSystemSquareGaussTransformer":
         n = self._linear_system.A.shape[0]
 
         for i in range(n-1, -1, -1):
@@ -125,13 +115,14 @@ class LinearSystemInplaceTransformer:
             # Если не нашли, то матрица вырождена
             raise ValueError(f"No allowed rows for column {row_index}")
 
-    def _check_row_index(self, index: int) -> None:
-        assert 0 <= index < self._linear_system.A.shape[0]
 
-    def _check_row_index_pair(self, index_from: int, index_to: int) -> None:
-        self._check_row_index(index_from)
-        self._check_row_index(index_to)
-        assert index_from != index_to
-
-    def _is_zero(self, x: float) -> bool:
-        return abs(x) <= np.finfo(self._linear_system.A.dtype).eps
+class LinearSystemUniversalGaussTransformer(LinearSystemBaseTransformer):
+    # TODO implement
+    """
+    Улучшенный ступенчатый вид (реализовать)
+    0 * 0 * 0 * | *
+    0 0 1 * 0 * | *
+    0 0 0 0 1 * | *
+    0 0 0 0 0 0 | *
+    """
+    pass

@@ -1,7 +1,8 @@
 import numpy as np
 
 from linalg.determinant import get_determinant
-from linalg.gauss import LinearSystem, LinearSystemInplaceTransformer
+from linalg.system import LinearSystem
+from linalg.transformers import LinearSystemSquareGaussTransformer
 
 
 def test_determinant():
@@ -58,7 +59,7 @@ def test_gauss():
     print(linear_system)
     print()
 
-    transformer = LinearSystemInplaceTransformer(linear_system)
+    transformer = LinearSystemSquareGaussTransformer(linear_system)
     transformer.apply_gauss()
     print(linear_system)
 
