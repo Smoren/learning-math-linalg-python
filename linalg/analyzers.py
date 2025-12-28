@@ -2,6 +2,7 @@ from typing import Set
 
 import numpy as np
 
+from linalg.operations import mul_matrices
 from linalg.system import LinearSystem
 from linalg.utils import is_zero
 
@@ -188,6 +189,19 @@ class LinearSystemAnalyser:
     def is_reduced_echelon(self) -> bool:
         """Проверяет, является ли система улучшенной (приведенной) ступенчатой."""
         return MatrixAnalyser(self._linear_system.A).is_echelon() and EchelonMatrixAnalyser(self._linear_system.A).is_reduced_echelon()
+
+    def is_solution(self, X: np.ndarray) -> bool:
+        """Проверяет, является ли вектор X решением системы."""
+        # Проверяем, что X имеет один столбец, а количество строк совпадает с количеством столбцов матрицы A
+        assert X.shape == (self._linear_system.A.shape[1], 1)
+
+        # Вычисляем правую часть системы (A * X)
+        B_actual = mul_matrices(self._linear_system.A, X)
+        # Ожидаемая правая часть системы
+        B_expected = self._linear_system.B
+
+        # Проверяем, что правые части совпадают
+        return np.all(is_zero(B_actual - B_expected))
 
 
 class EchelonLinearSystemAnalyzer(LinearSystemAnalyser):
