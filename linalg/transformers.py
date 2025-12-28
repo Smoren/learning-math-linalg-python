@@ -46,82 +46,7 @@ class LinearSystemBaseTransformer:
         assert index_from != index_to
 
 
-class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
-    def __init__(self, linear_system: LinearSystem):
-        assert linear_system.A.shape[0] == linear_system.A.shape[1]
-        super().__init__(linear_system)
-
-    def apply_gauss(self) -> "LinearSystemSquareGaussTransformer":
-        if is_zero(np.linalg.det(self._linear_system.A)):
-            raise ValueError("Matrix is singular")
-
-        # self._apply_pivoting()
-        self._apply_gauss_forward()
-        self._apply_gauss_backward()
-
-        for i in range(self._linear_system.A.shape[0]):
-            self.mul_row(i, 1/self._linear_system.A[i, i])
-
-        return self
-
-    def _apply_pivoting(self):
-        assert self._linear_system.A.shape[0] == self._linear_system.A.shape[1]
-
-        for i in range(self._linear_system.A.shape[0]):
-            if not is_zero(self._linear_system.A[i, i]):
-                continue
-            found = False
-            for j in range(self._linear_system.A.shape[1]):
-                if j != i and not is_zero(self._linear_system.A[j, i]):
-                    self.add_rows(j, i, 1)
-                    found = True
-                    break
-            if not found:
-                raise ValueError(f"No allowed rows for column {i}")
-
-    def _apply_gauss_forward(self):
-        n = self._linear_system.A.shape[0]
-
-        for i in range(n):
-            # Если диагональный элемент равен нулю
-            if is_zero(self._linear_system.A[i, i]):
-                self._fix_pivot_forward(i)
-
-            pivot = self._linear_system.A[i, i]
-            for j in range(i + 1, n):
-                mult = -self._linear_system.A[j, i] / pivot
-                self.add_rows(i, j, mult)
-
-        return self
-
-    def _apply_gauss_backward(self) -> "LinearSystemSquareGaussTransformer":
-        n = self._linear_system.A.shape[0]
-
-        for i in range(n-1, -1, -1):
-            pivot = self._linear_system.A[i, i]
-            for j in range(i-1, -1, -1):
-                mult = -self._linear_system.A[j, i] / pivot
-                self.add_rows(i, j, mult)
-
-        return self
-
-    def _fix_pivot_forward(self, row_index: int) -> None:
-        n = self._linear_system.A.shape[0]
-
-        # То среди следующих строк
-        for i in range(row_index + 1, n):
-            # ищем первую, где в соответствующем столбце не ноль
-            if not is_zero(self._linear_system.A[i, row_index]):
-                # Имеем право менять местами, так как в последующих строках уже должны быть нули по предыдущим столбцам
-                self.swap_rows(row_index, i)
-                break
-        else:
-            # Если не нашли, то матрица вырождена
-            raise ValueError(f"No allowed rows for column {row_index}")
-
-
-class LinearSystemUniversalGaussTransformer(LinearSystemBaseTransformer):
-    # TODO implement
+class LinearSystemGaussTransformer(LinearSystemBaseTransformer):
     """
     Улучшенный ступенчатый вид (реализовать)
     0 * 0 * 0 * | *
@@ -132,7 +57,7 @@ class LinearSystemUniversalGaussTransformer(LinearSystemBaseTransformer):
     Сколько решений (0, 1, бесконечно много)
     Выразить главные переменные через свободные (столбцы с 1 соответствуют главным переменным, с * соответствуют свободным переменным)
     """
-    def apply_gauss(self) -> "LinearSystemUniversalGaussTransformer":
+    def apply_gauss(self) -> "LinearSystemGaussTransformer":
         # Индекс текущей строки для обработки
         row_index = 0
 

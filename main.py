@@ -2,7 +2,7 @@ import numpy as np
 
 from linalg.determinant import get_determinant
 from linalg.system import LinearSystem
-from linalg.transformers import LinearSystemSquareGaussTransformer, LinearSystemUniversalGaussTransformer
+from linalg.transformers import LinearSystemGaussTransformer
 
 
 def test_determinant():
@@ -46,55 +46,12 @@ def test_gauss():
     #     [0, 0, 0, 1],
     #     [1, -4, 7, 0],
     # ], dtype=np.float64)
-
-
-    B = np.array([
-        [1],
-        [2],
-        [3],
-        [4],
-    ], dtype=np.float64)
-
-    linear_system = LinearSystem(A, B)
-    print(linear_system)
-    print()
-
-    transformer = LinearSystemSquareGaussTransformer(linear_system)
-    transformer.apply_gauss()
-    print(linear_system)
-
-
-def test_new_gauss():
-    A = np.array([
-        [0, 2, 3, 4],
-        [4, 0, 5, 1],
-        [5, 6, 0, 8],
-        [6, 5, 1, 0],
-    ], dtype=np.float64)
     # A = np.array([
-    #     [0, 2, 0, 0],
-    #     [4, 0, 0, 0],
-    #     [0, 0, 0, 8],
-    #     [0, 0, 1, 0],
-    # ], dtype=np.float64)
-    # A = np.array([
-    #     [0, 2, 0, 0],
-    #     [4, 0, 1, 0],
-    #     [0, 0, 0, 8],
-    #     [4, 0, 1, 0],
-    # ], dtype=np.float64)
-    # A = np.array([
-    #     [1, 2, 3, 0],
-    #     [2, 4, 5, 0],
+    #     [1, 0, 3, 0],
+    #     [2, 0, 5, 0],
     #     [0, 0, 0, 1],
-    #     [1, -4, 7, 0],
+    #     [1, 0, 7, 0],
     # ], dtype=np.float64)
-    A = np.array([
-        [1, 0, 3, 0],
-        [2, 0, 5, 0],
-        [0, 0, 0, 1],
-        [1, 0, 7, 0],
-    ], dtype=np.float64)
 
     B = np.array([
         [1],
@@ -107,13 +64,14 @@ def test_new_gauss():
     print(linear_system)
     print()
 
-    transformer = LinearSystemUniversalGaussTransformer(linear_system)
+    transformer = LinearSystemGaussTransformer(linear_system)
     transformer.apply_gauss()
     print(linear_system)
+    print()
 
+    print(f'det = {np.linalg.det(A)}')
 
 if __name__ == '__main__':
     # test_determinant()
-    # test_gauss()
-    test_new_gauss()
+    test_gauss()
 
