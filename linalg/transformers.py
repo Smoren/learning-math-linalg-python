@@ -1,3 +1,5 @@
+from typing import Optional, Tuple, List
+
 import numpy as np
 
 from linalg.system import LinearSystem
@@ -130,4 +132,41 @@ class LinearSystemUniversalGaussTransformer(LinearSystemBaseTransformer):
     Сколько решений (0, 1, бесконечно много)
     Выразить главные переменные через свободные (столбцы с 1 соответствуют главным переменным, с * соответствуют свободным переменным)
     """
-    pass
+    def apply_gauss(self) -> "LinearSystemUniversalGaussTransformer":
+        row_index = 0
+        pivots: List[Tuple[int, int]] = []
+        for col_index in range(self._linear_system.A.shape[1]):
+            pivot_row_index = self._find_row_index_of_max_non_zero_column(col_index, row_index)
+            if pivot_row_index is None:
+                continue
+
+            if pivot_row_index != row_index:
+                self.swap_rows(pivot_row_index, row_index)
+
+            pivot = self._linear_system.A[row_index, col_index]
+            for j in range(row_index + 1, self._linear_system.A.shape[0]):
+                mult = -self._linear_system.A[j, col_index] / pivot
+                self.add_rows(row_index, j, mult)
+
+            if not is_zero(self._linear_system.A[row_index, col_index]):
+                self.mul_row(row_index, 1/pivot)
+                pivots.append((row_index, col_index))
+
+            row_index += 1
+            if row_index == self._linear_system.A.shape[0]:
+                break
+
+        for row_index, col_index in reversed(pivots):
+            pivot = self._linear_system.A[row_index, col_index]
+            for j in range(row_index-1, -1, -1):
+                mult = -self._linear_system.A[j, col_index] / pivot
+                self.add_rows(row_index, j, mult)
+
+        return self
+
+    def _find_row_index_of_max_non_zero_column(self, column_index: int, start_row_index: int) -> Optional[int]:
+        candidates = self._linear_system.A[start_row_index:]
+        if np.all(is_zero(candidates[:, column_index])):
+            return None
+
+        return int(np.argmax(np.abs(candidates[:, column_index]))) + start_row_index
