@@ -45,6 +45,10 @@ class LinearSystemBaseTransformer:
 
 
 class LinearSystemSquareGaussTransformer(LinearSystemBaseTransformer):
+    def __init__(self, linear_system: LinearSystem):
+        assert linear_system.A.shape[0] == linear_system.A.shape[1]
+        super().__init__(linear_system)
+
     def apply_gauss(self) -> "LinearSystemSquareGaussTransformer":
         if is_zero(np.linalg.det(self._linear_system.A)):
             raise ValueError("Matrix is singular")
