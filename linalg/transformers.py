@@ -29,11 +29,11 @@ class LinearSystemBaseTransformer:
 
         return self
 
-    def swap_rows(self, index_from: int, index_to: int) -> "LinearSystemBaseTransformer":
-        self._check_row_index_pair(index_from, index_to)
+    def swap_rows(self, lhs: int, rhs: int) -> "LinearSystemBaseTransformer":
+        self._check_row_index_pair(lhs, rhs)
 
-        self._linear_system.A[[index_from, index_to]] = self._linear_system.A[[index_to, index_from]]
-        self._linear_system.B[[index_from, index_to]] = self._linear_system.B[[index_to, index_from]]
+        self._linear_system.A[[lhs, rhs]] = self._linear_system.A[[rhs, lhs]]
+        self._linear_system.B[[lhs, rhs]] = self._linear_system.B[[rhs, lhs]]
 
         return self
 
@@ -133,40 +133,69 @@ class LinearSystemUniversalGaussTransformer(LinearSystemBaseTransformer):
     Выразить главные переменные через свободные (столбцы с 1 соответствуют главным переменным, с * соответствуют свободным переменным)
     """
     def apply_gauss(self) -> "LinearSystemUniversalGaussTransformer":
+        # Индекс текущей строки для обработки
         row_index = 0
+
+        # Список опорных элементов (строка, столбец)
         pivots: List[Tuple[int, int]] = []
+
+        # Если матрица пустая, то ничего не делаем
+        if self._linear_system.A.shape[0] == 0:
+            return self
+
+        # Прямой ход метода Гаусса (проходим по столбцам)
         for col_index in range(self._linear_system.A.shape[1]):
+            # Ищем строку с максимальным по модулю ненулевым элементом в текущем столбце
             pivot_row_index = self._find_row_index_of_max_non_zero_column(col_index, row_index)
+
+            # Если все элементы в столбце нулевые, переходим к следующему столбцу, row_index не меняется
             if pivot_row_index is None:
                 continue
 
+            # Если строка с опорным элементом не совпадает с текущей, поменяем их местами
             if pivot_row_index != row_index:
                 self.swap_rows(pivot_row_index, row_index)
 
+            # После перестановки получаем гарантированно ненулевой опорный элемент, сохраняем его индексы
             pivot = self._linear_system.A[row_index, col_index]
+
+            # Обнуляем элементы под опорным
             for j in range(row_index + 1, self._linear_system.A.shape[0]):
+                # Получаем множитель для обнуления элемента (pivot != 0, значит деление безопасно)
                 mult = -self._linear_system.A[j, col_index] / pivot
+                # Добавляем строку row_index к строке j с коэффициентом mult, таким образом обнуляем элемент
                 self.add_rows(row_index, j, mult)
 
-            if not is_zero(self._linear_system.A[row_index, col_index]):
-                self.mul_row(row_index, 1/pivot)
-                pivots.append((row_index, col_index))
+            # Делим строку на опорный элемент, чтобы получить 1 в опорном элементе
+            self.mul_row(row_index, 1/pivot)
 
+            # Сохраняем индексы опорного элемента
+            pivots.append((row_index, col_index))
+
+            # Переходим к следующей строке
             row_index += 1
+            # Если достигли последней строки матрицы, выходим из цикла
             if row_index == self._linear_system.A.shape[0]:
                 break
 
+        # Обратный ход метода Гаусса (проходим только по столбцам с опорными элементами в обратном порядке)
         for row_index, col_index in reversed(pivots):
-            pivot = self._linear_system.A[row_index, col_index]
+            # Обнуляем элементы над опорным
             for j in range(row_index-1, -1, -1):
-                mult = -self._linear_system.A[j, col_index] / pivot
+                # Получаем множитель для обнуления элемента (pivot = 1, значит делить на него не нужно)
+                mult = -self._linear_system.A[j, col_index]
+                # Добавляем строку row_index к строке j с коэффициентом mult, таким образом обнуляем элемент
                 self.add_rows(row_index, j, mult)
 
         return self
 
     def _find_row_index_of_max_non_zero_column(self, column_index: int, start_row_index: int) -> Optional[int]:
+        # Берем подматрицу начиная с текущей строки
         candidates = self._linear_system.A[start_row_index:]
+
+        # Если все элементы в столбце нулевые, подходящих строк нет, возвращаем None
         if np.all(is_zero(candidates[:, column_index])):
             return None
 
+        # Ищем индекс строки с максимальным по модулю ненулевым элементом в столбце
         return int(np.argmax(np.abs(candidates[:, column_index]))) + start_row_index
