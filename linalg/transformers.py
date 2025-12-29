@@ -19,11 +19,13 @@ class LinearSystemBaseTransformer:
         self._check_row_index_pair(index_from, index_to)
 
         # Создаем матрицу элементарного преобразования
-        transformation_matrix = create_transform_matrix_add_row(index_from, index_to, self._linear_system.A.shape[0], mult)
+        transformation_matrix = create_transform_matrix_add_row(index_from, index_to, self._linear_system.AB.shape[0], mult)
 
         # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
-        self._linear_system.A = transformation_matrix @ self._linear_system.A
-        self._linear_system.B = transformation_matrix @ self._linear_system.B
+        self._linear_system.AB = transformation_matrix @ self._linear_system.AB
+
+        # self._linear_system.A = transformation_matrix @ self._linear_system.A
+        # self._linear_system.B = transformation_matrix @ self._linear_system.B
 
         # Пример тривиальной реализации
         # self._linear_system.A[index_to] += mult * self._linear_system.A[index_from]
@@ -37,11 +39,13 @@ class LinearSystemBaseTransformer:
         assert mult != 0
 
         # Создаем матрицу элементарного преобразования
-        transformation_matrix = create_transform_matrix_mul_row(index, mult, self._linear_system.A.shape[0])
+        transformation_matrix = create_transform_matrix_mul_row(index, mult, self._linear_system.AB.shape[0])
 
         # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
-        self._linear_system.A = transformation_matrix @ self._linear_system.A
-        self._linear_system.B = transformation_matrix @ self._linear_system.B
+        self._linear_system.AB = transformation_matrix @ self._linear_system.AB
+
+        # self._linear_system.A = transformation_matrix @ self._linear_system.A
+        # self._linear_system.B = transformation_matrix @ self._linear_system.B
 
         # Пример тривиальной реализации
         # self._linear_system.A[index] *= mult
@@ -54,11 +58,13 @@ class LinearSystemBaseTransformer:
         self._check_row_index_pair(lhs_index, rhs_index)
 
         # Создаем матрицу элементарного преобразования
-        transformation_matrix = create_transform_matrix_swap_rows(lhs_index, rhs_index, self._linear_system.A.shape[0])
+        transformation_matrix = create_transform_matrix_swap_rows(lhs_index, rhs_index, self._linear_system.AB.shape[0])
 
         # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
-        self._linear_system.A = transformation_matrix @ self._linear_system.A
-        self._linear_system.B = transformation_matrix @ self._linear_system.B
+        self._linear_system.AB = transformation_matrix @ self._linear_system.AB
+
+        # self._linear_system.A = transformation_matrix @ self._linear_system.A
+        # self._linear_system.B = transformation_matrix @ self._linear_system.B
 
         # Пример тривиальной реализации
         # self._linear_system.A[[lhs_index, rhs_index]] = self._linear_system.A[[rhs_index, lhs_index]]
@@ -68,7 +74,7 @@ class LinearSystemBaseTransformer:
 
     def _check_row_index(self, index: int) -> None:
         """Проверяет, что индекс строки находится в допустимом диапазоне."""
-        assert 0 <= index < self._linear_system.A.shape[0]
+        assert 0 <= index < self._linear_system.AB.shape[0]
 
     def _check_row_index_pair(self, index_from: int, index_to: int) -> None:
         """Проверяет, что индексы строк находятся в допустимом диапазоне и не равны друг другу."""
@@ -99,11 +105,11 @@ class LinearSystemGaussTransformer(LinearSystemBaseTransformer):
         pivots: List[Tuple[int, int]] = []
 
         # Если матрица пустая, то ничего не делаем
-        if self._linear_system.A.shape[0] == 0:
+        if self._linear_system.AB.shape[0] == 0:
             return self
 
         # Прямой ход метода Гаусса (проходим по столбцам)
-        for col_index in range(self._linear_system.A.shape[1]):
+        for col_index in range(self._linear_system.AB.shape[1]):
             # Ищем строку с максимальным по модулю ненулевым элементом в текущем столбце
             pivot_row_index = self._find_row_index_of_max_non_zero_column(col_index, row_index)
 
@@ -116,12 +122,12 @@ class LinearSystemGaussTransformer(LinearSystemBaseTransformer):
                 self.swap_rows(pivot_row_index, row_index)
 
             # После перестановки получаем гарантированно ненулевой опорный элемент, сохраняем его индексы
-            pivot = self._linear_system.A[row_index, col_index]
+            pivot = self._linear_system.AB[row_index, col_index]
 
             # Обнуляем элементы под опорным
-            for j in range(row_index + 1, self._linear_system.A.shape[0]):
+            for j in range(row_index + 1, self._linear_system.AB.shape[0]):
                 # Получаем множитель для обнуления элемента (pivot != 0, значит деление безопасно)
-                mult = -self._linear_system.A[j, col_index] / pivot
+                mult = -self._linear_system.AB[j, col_index] / pivot
                 # Добавляем строку row_index к строке j с коэффициентом mult, таким образом обнуляем элемент
                 self.add_rows(row_index, j, mult)
 
@@ -134,7 +140,7 @@ class LinearSystemGaussTransformer(LinearSystemBaseTransformer):
             # Переходим к следующей строке
             row_index += 1
             # Если достигли последней строки матрицы, выходим из цикла
-            if row_index == self._linear_system.A.shape[0]:
+            if row_index == self._linear_system.AB.shape[0]:
                 break
 
         # Обратный ход метода Гаусса (проходим только по столбцам с опорными элементами в обратном порядке)
@@ -142,7 +148,7 @@ class LinearSystemGaussTransformer(LinearSystemBaseTransformer):
             # Обнуляем элементы над опорным
             for j in range(row_index-1, -1, -1):
                 # Получаем множитель для обнуления элемента (pivot = 1, значит делить на него не нужно)
-                mult = -self._linear_system.A[j, col_index]
+                mult = -self._linear_system.AB[j, col_index]
                 # Добавляем строку row_index к строке j с коэффициентом mult, таким образом обнуляем элемент
                 self.add_rows(row_index, j, mult)
 
@@ -150,7 +156,7 @@ class LinearSystemGaussTransformer(LinearSystemBaseTransformer):
 
     def _find_row_index_of_max_non_zero_column(self, column_index: int, start_row_index: int) -> Optional[int]:
         # Берем подматрицу начиная с текущей строки
-        candidates = self._linear_system.A[start_row_index:]
+        candidates = self._linear_system.AB[start_row_index:]
 
         # Если все элементы в столбце нулевые, подходящих строк нет, возвращаем None
         if np.all(is_zero(candidates[:, column_index])):
