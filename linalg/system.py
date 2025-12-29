@@ -10,18 +10,45 @@ class LinearSystem:
     (A^-1 * A) * x = A^-1 * b => Ex = A^-1 * b => x = A^-1 * b
     """
 
-    A: np.ndarray
-    B: np.ndarray
+    _AB: np.ndarray
+    _left_columns_count: int
 
     def __init__(self, A: np.ndarray, B: np.ndarray):
         assert A.ndim == 2 and B.ndim == 2
-        assert A.shape[0] == B.shape[0] and B.shape[1] == 1
+        assert A.shape[0] == B.shape[0] and A.shape[1] > 0 and B.shape[1] > 0
 
-        self.A = A.copy()
-        self.B = B.copy()
+        self._AB = np.column_stack((A.copy(), B.copy()))
+        self._left_columns_count = A.shape[1]
 
     def copy(self) -> "LinearSystem":
         return LinearSystem(self.A.copy(), self.B.copy())
+
+    @property
+    def A(self):
+        return self._AB[:, :self._left_columns_count]
+
+    @property
+    def B(self):
+        return self._AB[:, self._left_columns_count:]
+
+    @property
+    def AB(self):
+        return self._AB
+
+    @A.setter
+    def A(self, value: np.ndarray):
+        assert value.ndim == 2 and value.shape[0] == self._AB.shape[0] and value.shape[1] == self._left_columns_count
+        self._AB[:, :value.shape[1]] = value
+
+    @B.setter
+    def B(self, value: np.ndarray):
+        assert value.ndim == 2 and value.shape[0] == self._AB.shape[0] and value.shape[1] == self._AB.shape[1] - self._left_columns_count
+        self._AB[:, self._left_columns_count:] = value
+
+    @AB.setter
+    def AB(self, value: np.ndarray):
+        assert value.ndim == 2 and value.shape[0] == self._AB.shape[0] and value.shape[1] == self._AB.shape[1]
+        self._AB = value
 
     def __repr__(self) -> str:
         all_strings = []
