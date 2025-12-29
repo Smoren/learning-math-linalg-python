@@ -17,12 +17,6 @@ class MatrixAnalyser:
         """Проверяет, является ли матрица квадратной (NxN)."""
         return self._matrix.shape[0] == self._matrix.shape[1]
 
-    def is_singular(self) -> bool:
-        """Проверяет, является ли матрица вырожденной (определитель равен 0)."""
-        if not self.is_square():
-            raise ValueError("Only square matrices can be singular")
-        return is_zero(np.linalg.det(self._matrix))
-
     def is_zero(self) -> bool:
         """Проверяет, является ли матрица нулевой (все элементы равны 0)."""
         return np.all(is_zero(self._matrix))
@@ -141,6 +135,14 @@ class SquareMatrixAnalyser(MatrixAnalyser):
                 return False
         return True
 
+    def is_singular(self) -> bool:
+        """Проверяет, является ли матрица вырожденной (определитель равен 0)."""
+        return is_zero(np.linalg.det(self._matrix))
+
+    def is_invertible(self) -> bool:
+        """Проверяет, является ли матрица обратимой (противоположно is_singular)."""
+        return not self.is_singular()
+
     def is_inverse(self, another: np.ndarray) -> bool:
         """
         Проверяет, является ли матрица обратной для другой матрицы.
@@ -204,6 +206,20 @@ class EchelonMatrixAnalyser(MatrixAnalyser):
         # Если все столбцы с опорными элементами прошли проверку,
         # матрица является приведенной ступенчатой (RREF)
         return True
+
+
+class SquareEchelonMatrixAnalyser(EchelonMatrixAnalyser, SquareMatrixAnalyser):
+    def __init__(self, matrix: np.ndarray):
+        EchelonMatrixAnalyser.__init__(self, matrix)
+        SquareMatrixAnalyser.__init__(self, matrix)
+
+    def is_singular(self) -> bool:
+        """Проверяет, является ли матрица вырожденной (определитель равен 0)."""
+        return self.get_rank() < self._matrix.shape[0]
+
+    def is_invertible(self) -> bool:
+        """Проверяет, является ли матрица обратимой (противоположно is_singular)."""
+        return not self.is_singular()
 
 
 class LinearSystemAnalyser:

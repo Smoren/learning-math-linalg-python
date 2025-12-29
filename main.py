@@ -1,6 +1,6 @@
 import numpy as np
 
-from linalg.analyzers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser
+from linalg.analyzers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
 from linalg.determinant import get_determinant
 from linalg.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
     example_transform_matrix_mul_row
@@ -167,12 +167,37 @@ def test_linear_system_analyzer():
     print(analyzer.is_solution(B_expected))
 
 
+def test_square_echelon_matrix_analyzer():
+    A = np.array([
+        [0, 2, 3, 4],
+        [4, 0, 5, 1],
+        [5, 6, 0, 8],
+        [6, 5, 1, 0],
+    ], dtype=np.float64)
+    B = np.array([
+        [1],
+        [2],
+        [3],
+        [4],
+    ], dtype=np.float64)
+    linear_system = LinearSystem(A, B)
+
+    transformer = LinearSystemGaussTransformer(linear_system)
+    transformer.apply_gauss()
+    print(linear_system)
+
+    analyzer = SquareEchelonMatrixAnalyser(linear_system.A)
+    print(analyzer.is_invertible())
+    print()
+
+
 if __name__ == '__main__':
     # test_determinant()
-    test_gauss()
+    # test_gauss()
     # test_analyzers()
     # test_operations()
     # test_linear_system_analyzer()
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
+    test_square_echelon_matrix_analyzer()
