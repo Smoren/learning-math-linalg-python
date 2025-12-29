@@ -2,6 +2,8 @@ from typing import Optional, Tuple, List
 
 import numpy as np
 
+from linalg.factories import create_transform_matrix_add_row, create_transform_matrix_mul_row, \
+    create_transform_matrix_swap_rows
 from linalg.system import LinearSystem
 from linalg.utils import is_zero
 
@@ -13,34 +15,63 @@ class LinearSystemBaseTransformer:
         self._linear_system = linear_system
 
     def add_rows(self, index_from: int, index_to: int, mult: float) -> "LinearSystemBaseTransformer":
+        """Прибавляет к строке с индексом index_to строку с индексом index_from, умноженную на mult."""
         self._check_row_index_pair(index_from, index_to)
 
-        self._linear_system.A[index_to] += mult * self._linear_system.A[index_from]
-        self._linear_system.B[index_to] += mult * self._linear_system.B[index_from]
+        # Создаем матрицу элементарного преобразования
+        transformation_matrix = create_transform_matrix_add_row(index_from, index_to, self._linear_system.A.shape[0], mult)
+
+        # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
+        self._linear_system.A = transformation_matrix @ self._linear_system.A
+        self._linear_system.B = transformation_matrix @ self._linear_system.B
+
+        # Пример тривиальной реализации
+        # self._linear_system.A[index_to] += mult * self._linear_system.A[index_from]
+        # self._linear_system.B[index_to] += mult * self._linear_system.B[index_from]
 
         return self
 
     def mul_row(self, index: int, mult: float) -> "LinearSystemBaseTransformer":
+        """Умножает строку с индексом index на mult."""
         self._check_row_index(index)
         assert mult != 0
 
-        self._linear_system.A[index] *= mult
-        self._linear_system.B[index] *= mult
+        # Создаем матрицу элементарного преобразования
+        transformation_matrix = create_transform_matrix_mul_row(index, mult, self._linear_system.A.shape[0])
+
+        # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
+        self._linear_system.A = transformation_matrix @ self._linear_system.A
+        self._linear_system.B = transformation_matrix @ self._linear_system.B
+
+        # Пример тривиальной реализации
+        # self._linear_system.A[index] *= mult
+        # self._linear_system.B[index] *= mult
 
         return self
 
-    def swap_rows(self, lhs: int, rhs: int) -> "LinearSystemBaseTransformer":
-        self._check_row_index_pair(lhs, rhs)
+    def swap_rows(self, lhs_index: int, rhs_index: int) -> "LinearSystemBaseTransformer":
+        """Меняет местами строки с индексами lhs_index и rhs_index."""
+        self._check_row_index_pair(lhs_index, rhs_index)
 
-        self._linear_system.A[[lhs, rhs]] = self._linear_system.A[[rhs, lhs]]
-        self._linear_system.B[[lhs, rhs]] = self._linear_system.B[[rhs, lhs]]
+        # Создаем матрицу элементарного преобразования
+        transformation_matrix = create_transform_matrix_swap_rows(lhs_index, rhs_index, self._linear_system.A.shape[0])
+
+        # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
+        self._linear_system.A = transformation_matrix @ self._linear_system.A
+        self._linear_system.B = transformation_matrix @ self._linear_system.B
+
+        # Пример тривиальной реализации
+        # self._linear_system.A[[lhs_index, rhs_index]] = self._linear_system.A[[rhs_index, lhs_index]]
+        # self._linear_system.B[[lhs_index, rhs_index]] = self._linear_system.B[[rhs_index, lhs_index]]
 
         return self
 
     def _check_row_index(self, index: int) -> None:
+        """Проверяет, что индекс строки находится в допустимом диапазоне."""
         assert 0 <= index < self._linear_system.A.shape[0]
 
     def _check_row_index_pair(self, index_from: int, index_to: int) -> None:
+        """Проверяет, что индексы строк находятся в допустимом диапазоне и не равны друг другу."""
         self._check_row_index(index_from)
         self._check_row_index(index_to)
         assert index_from != index_to

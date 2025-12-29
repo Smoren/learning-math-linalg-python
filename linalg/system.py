@@ -17,8 +17,8 @@ class LinearSystem:
         assert A.ndim == 2 and B.ndim == 2
         assert A.shape[0] == B.shape[0] and B.shape[1] == 1
 
-        self.A = A
-        self.B = B
+        self.A = A.copy()
+        self.B = B.copy()
 
     def copy(self) -> "LinearSystem":
         return LinearSystem(self.A.copy(), self.B.copy())

@@ -57,6 +57,19 @@ def test_gauss():
     #     [1, 0, 7, 0],
     # ], dtype=np.float64)
 
+    # A = np.array([
+    #     [0, 2, 3],
+    #     [4, 0, 5],
+    #     [5, 6, 0],
+    #     [6, 5, 1],
+    # ], dtype=np.float64)
+    # A = np.array([
+    #     [0, 2, 3, 4, 10],
+    #     [4, 0, 5, 1, 11],
+    #     [5, 6, 0, 8, 12],
+    #     [6, 5, 1, 0, 13],
+    # ], dtype=np.float64)
+
     B = np.array([
         [1],
         [2],
@@ -73,7 +86,8 @@ def test_gauss():
     print(linear_system)
     print()
 
-    print(f'det = {np.linalg.det(A)}')
+    if A.shape[0] == A.shape[1]:
+        print(f'det = {np.linalg.det(A)}')
 
 
 def test_analyzers():
@@ -155,10 +169,10 @@ def test_linear_system_analyzer():
 
 if __name__ == '__main__':
     # test_determinant()
-    # test_gauss()
+    test_gauss()
     # test_analyzers()
     # test_operations()
     # test_linear_system_analyzer()
-    # example_add_row()
+    # example_transform_matrix_add_row()
+    # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
-    example_transform_matrix_mul_row()
