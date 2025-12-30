@@ -205,8 +205,7 @@ def test_solve_big_system():
     transformer.apply_gauss()
     print(linear_system)
     print()
-
-    print(np.round(linear_system.B @ A, 8))
+    print(np.round(linear_system.B @ A))
 
 
 if __name__ == '__main__':
