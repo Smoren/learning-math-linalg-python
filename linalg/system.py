@@ -54,6 +54,6 @@ class LinearSystem:
         all_strings = []
 
         for i in range(self.A.shape[0]):
-            all_strings.append(" ".join(map(lambda x: f"{x:10.6g}", self.A[i].tolist())) + " | " + f"{self.B[i, 0]:10.6g}")
+            all_strings.append(" ".join(map(lambda x: f"{x:10.6g}", self.A[i].tolist())) + " | " + " ".join(map(lambda x: f"{x:10.6g}", self.B[i].tolist())))
 
         return "\n".join(all_strings)
