@@ -21,7 +21,7 @@ class LinearSystemBaseTransformer:
         # Создаем матрицу элементарного преобразования
         transformation_matrix = create_transform_matrix_add_row(index_from, index_to, self._linear_system.AB.shape[0], mult)
 
-        # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
+        # Применяем преобразование к матрице (A|B): умножаем слева на матрицу элементарного преобразования
         self._linear_system.AB = transformation_matrix @ self._linear_system.AB
 
         # self._linear_system.A = transformation_matrix @ self._linear_system.A
@@ -41,7 +41,7 @@ class LinearSystemBaseTransformer:
         # Создаем матрицу элементарного преобразования
         transformation_matrix = create_transform_matrix_mul_row(index, mult, self._linear_system.AB.shape[0])
 
-        # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
+        # Применяем преобразование к матрице (A|B): умножаем слева на матрицу элементарного преобразования
         self._linear_system.AB = transformation_matrix @ self._linear_system.AB
 
         # self._linear_system.A = transformation_matrix @ self._linear_system.A
@@ -60,7 +60,7 @@ class LinearSystemBaseTransformer:
         # Создаем матрицу элементарного преобразования
         transformation_matrix = create_transform_matrix_swap_rows(lhs_index, rhs_index, self._linear_system.AB.shape[0])
 
-        # Применяем преобразование к матрице A и B с помощью левого матричного умножения левой и правой сторон линейной системы
+        # Применяем преобразование к матрице (A|B): умножаем слева на матрицу элементарного преобразования
         self._linear_system.AB = transformation_matrix @ self._linear_system.AB
 
         # self._linear_system.A = transformation_matrix @ self._linear_system.A
