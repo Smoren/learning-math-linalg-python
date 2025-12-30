@@ -118,3 +118,59 @@ def example_transform_matrix_swap_rows():
 
     Ti = T
     print(Ti @ T)  # Обратная матрица к T (можно использовать для обратного преобразования)
+
+
+def example_multiply_per_block():
+    """
+    Блочные формулы
+
+        k   l         u   v           u       v
+      +---+---+     +---+---+     +-------+-------+
+    m | A | B |   k | X | Y |   m | AX+BZ | AY+BW |
+      +-------+ *   +-------+ =   +-------+-------+
+    n | C | D |   l | Z | W |   n | CX+DZ | CY+DW |
+      +---+---+     +---+---+     +-------+-------+
+    """
+
+    P = np.array([  # (m+n)×(k+l)
+        [11, 12, 13, 14, 15],
+        [16, 17, 18, 19, 20],
+        [21, 22, 23, 24, 25],
+    ])
+    Q = np.array([  # (k+l)×(u+v)
+        [31, 32, 33],
+        [34, 35, 36],
+        [37, 38, 39],
+        [40, 41, 42],
+        [43, 44, 45],
+    ])
+
+    m = 2
+    k = 3
+    u = 2
+
+    A = P[:m, :k]
+    B = P[:m, k:]
+    C = P[m:, :k]
+    D = P[m:, k:]
+
+    X = Q[:k, :u]
+    Y = Q[:k, u:]
+    Z = Q[k:, :u]
+    W = Q[k:, u:]
+
+    LT = A @ X + B @ Z
+    RT = A @ Y + B @ W
+    LB = C @ X + D @ Z
+    RB = C @ Y + D @ W
+
+    TOP = np.column_stack([LT, RT])
+    BOTTOM = np.column_stack([LB, RB])
+    RESULT = np.vstack([TOP, BOTTOM])
+
+    print("Блочное перемножение:")
+    print(RESULT)
+    print()
+
+    print("Обычное перемножение:")
+    print(P @ Q)

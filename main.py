@@ -3,7 +3,7 @@ import numpy as np
 from linalg.analysers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
 from linalg.determinant import get_determinant
 from linalg.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
-    example_transform_matrix_mul_row
+    example_transform_matrix_mul_row, example_multiply_per_block
 from linalg.operations import add_matrices, mul_matrix, mul_matrices
 from linalg.solvers import get_inverse_matrix, get_left_inverse_matrix, get_right_inverse_matrix
 from linalg.system import LinearSystem
@@ -287,8 +287,9 @@ if __name__ == '__main__':
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
+    example_multiply_per_block()
     # test_square_echelon_matrix_analyser()
     # test_solve_big_system()
     # test_get_inverse_matrix()
     # test_get_left_inverse_matrix()
-    test_get_right_inverse_matrix()
+    # test_get_right_inverse_matrix()
