@@ -1,11 +1,11 @@
 import numpy as np
 
-from linalg.analyzers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
+from linalg.analysers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
 from linalg.determinant import get_determinant
 from linalg.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
     example_transform_matrix_mul_row
 from linalg.operations import add_matrices, mul_matrix, mul_matrices
-from linalg.solvers import get_inverse_matrix
+from linalg.solvers import get_inverse_matrix, get_left_inverse_matrix
 from linalg.system import LinearSystem
 from linalg.transformers import LinearSystemGaussTransformer
 
@@ -91,7 +91,7 @@ def test_gauss():
         print(f'det = {np.linalg.det(A)}')
 
 
-def test_analyzers():
+def test_analysers():
     # A = np.array([
     #     [1, 2, 0, 0],
     #     [0, 0, 1, 0],
@@ -138,7 +138,7 @@ def test_operations():
     print(mul_matrices(a, b))
 
 
-def test_linear_system_analyzer():
+def test_linear_system_analyser():
     A = np.array([
         [0, 2, 0, 0],
         [4, 0, 0, 0],
@@ -157,7 +157,7 @@ def test_linear_system_analyzer():
     # transformer.apply_gauss()
     # print(linear_system)
 
-    analyzer = LinearSystemAnalyser(linear_system)
+    analyser = LinearSystemAnalyser(linear_system)
 
     B_expected = np.array([
         [0.5],
@@ -165,10 +165,10 @@ def test_linear_system_analyzer():
         [4],
         [0.375],
     ], dtype=np.float64)
-    print(analyzer.is_solution(B_expected))
+    print(analyser.is_solution(B_expected))
 
 
-def test_square_echelon_matrix_analyzer():
+def test_square_echelon_matrix_analyser():
     A = np.array([
         [0, 2, 3, 4],
         [4, 0, 5, 1],
@@ -187,8 +187,8 @@ def test_square_echelon_matrix_analyzer():
     transformer.apply_gauss()
     print(linear_system)
 
-    analyzer = SquareEchelonMatrixAnalyser(linear_system.A)
-    print(analyzer.is_invertible())
+    analyser = SquareEchelonMatrixAnalyser(linear_system.A)
+    print(analyser.is_invertible())
     print()
 
 
@@ -235,15 +235,42 @@ def test_get_inverse_matrix():
     print()
 
 
+def test_get_left_inverse_matrix():
+    A = np.array([
+        [0, 2, 3],
+        [4, 0, 5],
+        [5, 6, 0],
+        [6, 5, 1],
+    ], dtype=np.float64)
+    L = get_left_inverse_matrix(A)
+
+    print("A:")
+    print(A)
+    print()
+
+    print("L:")
+    print(L)
+    print()
+
+    print("L * A:")
+    print(np.round(L @ A, 8))
+    print()
+
+    # print("A * A^-1:")
+    # print(np.round(A @ Ai, 8))
+    # print()
+
+
 if __name__ == '__main__':
     # test_determinant()
     # test_gauss()
-    # test_analyzers()
+    # test_analysers()
     # test_operations()
-    # test_linear_system_analyzer()
+    # test_linear_system_analyser()
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
-    # test_square_echelon_matrix_analyzer()
+    # test_square_echelon_matrix_analyser()
     # test_solve_big_system()
-    test_get_inverse_matrix()
+    # test_get_inverse_matrix()
+    test_get_left_inverse_matrix()

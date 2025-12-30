@@ -262,7 +262,7 @@ class LinearSystemAnalyser:
         return np.all(is_zero(B_actual - B_expected))
 
 
-class EchelonLinearSystemAnalyzer(LinearSystemAnalyser):
+class EchelonLinearSystemAnalyser(LinearSystemAnalyser):
     def __init__(self, linear_system: LinearSystem):
         super().__init__(linear_system)
         if not MatrixAnalyser(linear_system.A).is_echelon():
