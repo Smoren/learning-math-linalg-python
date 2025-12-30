@@ -5,6 +5,7 @@ from linalg.determinant import get_determinant
 from linalg.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
     example_transform_matrix_mul_row
 from linalg.operations import add_matrices, mul_matrix, mul_matrices
+from linalg.solvers import get_inverse_matrix
 from linalg.system import LinearSystem
 from linalg.transformers import LinearSystemGaussTransformer
 
@@ -208,6 +209,32 @@ def test_solve_big_system():
     print(np.round(linear_system.B @ A))
 
 
+def test_get_inverse_matrix():
+    A = np.array([
+        [0, 2, 3, 4],
+        [4, 0, 5, 1],
+        [5, 6, 0, 8],
+        [6, 5, 1, 0],
+    ], dtype=np.float64)
+    Ai = get_inverse_matrix(A)
+
+    print("A:")
+    print(A)
+    print()
+
+    print("A^-1:")
+    print(Ai)
+    print()
+
+    print("A^-1 * A:")
+    print(np.round(Ai @ A, 8))
+    print()
+
+    print("A * A^-1:")
+    print(np.round(A @ Ai, 8))
+    print()
+
+
 if __name__ == '__main__':
     # test_determinant()
     # test_gauss()
@@ -218,4 +245,5 @@ if __name__ == '__main__':
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
     # test_square_echelon_matrix_analyzer()
-    test_solve_big_system()
+    # test_solve_big_system()
+    test_get_inverse_matrix()
