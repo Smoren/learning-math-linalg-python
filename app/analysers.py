@@ -236,10 +236,6 @@ class LinearSystemAnalyser:
         """Проверяет, является ли система квадратной (NxN)."""
         return MatrixAnalyser(self._linear_system.A).is_square()
 
-    def is_singular(self) -> bool:
-        """Проверяет, является ли система вырожденной (определитель A равен 0)."""
-        return not MatrixAnalyser(self._linear_system.A).is_singular()
-
     def is_echelon(self) -> bool:
         """Проверяет, является ли система ступенчатой."""
         return MatrixAnalyser(self._linear_system.A).is_echelon()
@@ -271,6 +267,11 @@ class EchelonLinearSystemAnalyser(LinearSystemAnalyser):
     def get_pivot_columns(self) -> Set[int]:
         """Возвращает множество индексов столбцов, содержащих опорные элементы."""
         return EchelonMatrixAnalyser(self._linear_system.A).get_pivot_columns()
+
+    def get_free_var_columns(self) -> Set[int]:
+        """Возвращает множество индексов столбцов, содержащих свободные переменные."""
+        pivot_columns = self.get_pivot_columns()
+        return set(range(self._linear_system.A.shape[1])) - pivot_columns
 
     def get_rank(self) -> int:
         """Возвращает ранг системы (количество опорных элементов)."""

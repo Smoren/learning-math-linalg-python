@@ -26,61 +26,6 @@ def test_determinant():
     print(actual, expected, abs(expected - actual))
 
 
-def test_gauss():
-    A = np.array([
-        [0, 2, 0, 0],
-        [4, 0, 1, 0],
-        [0, 0, 0, 8],
-        [4, 0, 1, 0],
-    ], dtype=np.float64)
-    # A = np.array([
-    #     [1, 2, 3, 0],
-    #     [2, 4, 5, 0],
-    #     [0, 0, 0, 1],
-    #     [1, -4, 7, 0],
-    # ], dtype=np.float64)
-    # A = np.array([
-    #     [1, 0, 3, 0],
-    #     [2, 0, 5, 0],
-    #     [0, 0, 0, 1],
-    #     [1, 0, 7, 0],
-    # ], dtype=np.float64)
-
-    # A = np.array([
-    #     [0, 2, 3],
-    #     [4, 0, 5],
-    #     [5, 6, 0],
-    #     [6, 5, 1],
-    # ], dtype=np.float64)
-    # A = np.array([
-    #     [0, 2, 3, 4, 10],
-    #     [4, 0, 5, 1, 11],
-    #     [5, 6, 0, 8, 12],
-    #     [6, 5, 1, 0, 13],
-    # ], dtype=np.float64)
-
-    B = np.array([
-        [1],
-        [2],
-        [3],
-        [4],
-    ], dtype=np.float64)
-
-    linear_system = LinearSystem(A, B)
-    print(linear_system)
-    print()
-
-    transformer = LinearSystemGaussTransformer(linear_system)
-    transformer.apply_gauss()
-    print(linear_system)
-    print()
-
-    assert np.isclose(linear_system.A, np.eye(A.shape[0], A.shape[1])).all()
-
-    if A.shape[0] == A.shape[1]:
-        print(f'det = {np.linalg.det(A)}')
-
-
 def test_analysers():
     # A = np.array([
     #     [1, 2, 0, 0],
@@ -269,8 +214,8 @@ def test_get_right_inverse_matrix():
 
 
 if __name__ == '__main__':
-    # test_determinant()
-    test_gauss()
+    test_determinant()
+    # test_gauss()
     # test_analysers()
     # test_operations()
     # test_linear_system_analyser()
