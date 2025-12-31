@@ -27,33 +27,8 @@ def test_analysers():
     print(analyser.is_reduced_echelon())
 
 
-def test_operations():
-    a = np.array([
-        [1, 2],
-        [3, 4],
-    ])
-    b = np.array([
-        [5, 6],
-        [7, 8],
-    ])
-    print(add_matrices(a, b))
-    print(mul_matrix(a, 2))
-
-    a = np.array([
-        [1, 2],
-        [4, 5],
-        [7, 8],
-    ])
-    b = np.array([
-        [5, 6, 7, 8],
-        [7, 8, 9, 10],
-    ])
-    print(mul_matrices(a, b))
-
-
 if __name__ == '__main__':
     test_analysers()
-    # test_operations()
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
