@@ -1,12 +1,7 @@
 import numpy as np
 
-from app.analysers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
-from app.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
-    example_transform_matrix_mul_row, example_multiply_per_block
+from app.analysers import EchelonMatrixAnalyser
 from app.operations import add_matrices, mul_matrix, mul_matrices
-from app.solvers import get_inverse_matrix, get_left_inverse_matrix, get_right_inverse_matrix, get_determinant
-from app.system import LinearSystem
-from app.transformers import LinearSystemGaussTransformer
 
 
 def test_analysers():
