@@ -75,7 +75,6 @@ def test_operations():
 
 if __name__ == '__main__':
     test_determinant()
-    # test_gauss()
     # test_analysers()
     # test_operations()
     # example_transform_matrix_add_row()
