@@ -144,49 +144,6 @@ def test_solve_big_system():
     print(np.round(linear_system.B @ A))
 
 
-def test_get_left_inverse_matrix():
-    A = np.array([
-        [0, 2, 3],
-        [4, 0, 5],
-        [5, 6, 0],
-        [6, 5, 1],
-    ], dtype=np.float64)
-    L = get_left_inverse_matrix(A)
-
-    print("A:")
-    print(A)
-    print()
-
-    print("L:")
-    print(L)
-    print()
-
-    print("L * A:")
-    print(np.round(L @ A, 8))
-    print()
-
-
-def test_get_right_inverse_matrix():
-    A = np.array([
-        [0, 2, 3, 4],
-        [4, 0, 5, 1],
-        [5, 6, 0, 8],
-    ], dtype=np.float64)
-    R = get_right_inverse_matrix(A)
-
-    print("A:")
-    print(A)
-    print()
-
-    print("R:")
-    print(R)
-    print()
-
-    print("A * R:")
-    print(np.round(A @ R, 8))
-    print()
-
-
 if __name__ == '__main__':
     test_determinant()
     # test_gauss()
@@ -199,5 +156,3 @@ if __name__ == '__main__':
     # example_multiply_per_block()
     # test_square_echelon_matrix_analyser()
     # test_solve_big_system()
-    # test_get_left_inverse_matrix()
-    # test_get_right_inverse_matrix()
