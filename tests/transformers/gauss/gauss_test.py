@@ -44,7 +44,7 @@ def test_gauss_for_invertible(data: tuple[np.ndarray, np.ndarray]):
 
 
 @pytest.mark.parametrize("data", data_provider_for_gauss_for_singular())
-def test_gauss_for_singular(data: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]):
+def test_gauss_for_singular(data: tuple[np.ndarray, np.ndarray]):
     """
     Тестирование метода Гаусса для решения СЛАУ с вырожденной матрицей.
 
