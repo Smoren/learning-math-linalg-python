@@ -21,6 +21,10 @@ class MatrixAnalyser:
         """Проверяет, является ли матрица нулевой (все элементы равны 0)."""
         return np.all(is_zero(self._matrix))
 
+    def is_identity(self) -> bool:
+        """Проверяет, является ли матрица единичной."""
+        return np.all(self._matrix == np.eye(*self._matrix.shape))
+
     def is_echelon(self) -> bool:
         """Проверяет, является ли матрица ступенчатой."""
         # Получаем размеры матрицы
