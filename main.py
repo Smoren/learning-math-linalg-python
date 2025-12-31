@@ -127,23 +127,6 @@ def test_square_echelon_matrix_analyser():
     print()
 
 
-def test_solve_big_system():
-    A = np.array([
-        [0, 2, 3, 4],
-        [4, 0, 5, 1],
-        [5, 6, 0, 8],
-        [6, 5, 1, 0],
-    ], dtype=np.float64)
-    B = np.eye(4, 4)
-
-    linear_system = LinearSystem(A, B)
-    transformer = LinearSystemGaussTransformer(linear_system)
-    transformer.apply_gauss()
-    print(linear_system)
-    print()
-    print(np.round(linear_system.B @ A))
-
-
 if __name__ == '__main__':
     test_determinant()
     # test_gauss()
@@ -155,4 +138,3 @@ if __name__ == '__main__':
     # example_transform_matrix_swap_rows()
     # example_multiply_per_block()
     # test_square_echelon_matrix_analyser()
-    # test_solve_big_system()
