@@ -2,9 +2,9 @@ from typing import Set
 
 import numpy as np
 
-from linalg.operations import mul_matrices
-from linalg.system import LinearSystem
-from linalg.utils import is_zero
+from app.operations import mul_matrices
+from app.system import LinearSystem
+from app.utils import is_zero
 
 
 class MatrixAnalyser:

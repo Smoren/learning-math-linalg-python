@@ -1,13 +1,13 @@
 import numpy as np
 
-from linalg.analysers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
-from linalg.determinant import get_determinant
-from linalg.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
+from app.analysers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
+from app.determinant import get_determinant
+from app.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
     example_transform_matrix_mul_row, example_multiply_per_block
-from linalg.operations import add_matrices, mul_matrix, mul_matrices
-from linalg.solvers import get_inverse_matrix, get_left_inverse_matrix, get_right_inverse_matrix
-from linalg.system import LinearSystem
-from linalg.transformers import LinearSystemGaussTransformer
+from app.operations import add_matrices, mul_matrix, mul_matrices
+from app.solvers import get_inverse_matrix, get_left_inverse_matrix, get_right_inverse_matrix
+from app.system import LinearSystem
+from app.transformers import LinearSystemGaussTransformer
 
 
 def test_determinant():
@@ -106,7 +106,7 @@ def test_analysers():
     ], dtype=np.float64)
 
     analyser = EchelonMatrixAnalyser(A)
-    # print(f'det = {np.linalg.det(A)}')
+    # print(f'det = {np.src.det(A)}')
     # print(analyser.is_square())
     # print(analyser.is_singular())
     # print(analyser.is_echelon())

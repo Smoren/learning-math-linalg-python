@@ -2,10 +2,10 @@ from typing import Optional, Tuple, List
 
 import numpy as np
 
-from linalg.factories import create_transform_matrix_add_row, create_transform_matrix_mul_row, \
+from app.factories import create_transform_matrix_add_row, create_transform_matrix_mul_row, \
     create_transform_matrix_swap_rows
-from linalg.system import LinearSystem
-from linalg.utils import is_zero
+from app.system import LinearSystem
+from app.utils import is_zero
 
 
 class LinearSystemBaseTransformer:

@@ -1,8 +1,8 @@
 import numpy as np
 
-from linalg.analysers import SquareMatrixAnalyser, EchelonMatrixAnalyser
-from linalg.system import LinearSystem
-from linalg.transformers import LinearSystemGaussTransformer
+from app.analysers import SquareMatrixAnalyser, EchelonMatrixAnalyser
+from app.system import LinearSystem
+from app.transformers import LinearSystemGaussTransformer
 
 
 def get_inverse_matrix(A: np.ndarray):
