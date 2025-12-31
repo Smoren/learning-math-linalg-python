@@ -28,23 +28,11 @@ def test_determinant():
 
 def test_gauss():
     A = np.array([
-        [0, 2, 3, 4],
-        [4, 0, 5, 1],
-        [5, 6, 0, 8],
-        [6, 5, 1, 0],
+        [0, 2, 0, 0],
+        [4, 0, 1, 0],
+        [0, 0, 0, 8],
+        [4, 0, 1, 0],
     ], dtype=np.float64)
-    # A = np.array([
-    #     [0, 2, 0, 0],
-    #     [4, 0, 0, 0],
-    #     [0, 0, 0, 8],
-    #     [0, 0, 1, 0],
-    # ], dtype=np.float64)
-    # A = np.array([
-    #     [0, 2, 0, 0],
-    #     [4, 0, 1, 0],
-    #     [0, 0, 0, 8],
-    #     [4, 0, 1, 0],
-    # ], dtype=np.float64)
     # A = np.array([
     #     [1, 2, 3, 0],
     #     [2, 4, 5, 0],
@@ -86,6 +74,8 @@ def test_gauss():
     transformer.apply_gauss()
     print(linear_system)
     print()
+
+    assert np.isclose(linear_system.A, np.eye(A.shape[0], A.shape[1])).all()
 
     if A.shape[0] == A.shape[1]:
         print(f'det = {np.linalg.det(A)}')
@@ -280,14 +270,14 @@ def test_get_right_inverse_matrix():
 
 if __name__ == '__main__':
     # test_determinant()
-    # test_gauss()
+    test_gauss()
     # test_analysers()
     # test_operations()
     # test_linear_system_analyser()
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
-    example_multiply_per_block()
+    # example_multiply_per_block()
     # test_square_echelon_matrix_analyser()
     # test_solve_big_system()
     # test_get_inverse_matrix()

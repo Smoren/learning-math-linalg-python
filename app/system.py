@@ -24,15 +24,15 @@ class LinearSystem:
         return LinearSystem(self.A.copy(), self.B.copy())
 
     @property
-    def A(self):
+    def A(self) -> np.ndarray:
         return self._AB[:, :self._left_columns_count]
 
     @property
-    def B(self):
+    def B(self) -> np.ndarray:
         return self._AB[:, self._left_columns_count:]
 
     @property
-    def AB(self):
+    def AB(self) -> np.ndarray:
         return self._AB
 
     @A.setter
