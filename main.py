@@ -1,29 +1,12 @@
 import numpy as np
 
 from app.analysers import MatrixAnalyser, EchelonMatrixAnalyser, LinearSystemAnalyser, SquareEchelonMatrixAnalyser
-from app.determinant import get_determinant
 from app.examples import example_transform_matrix_add_row, example_transform_matrix_swap_rows, \
     example_transform_matrix_mul_row, example_multiply_per_block
 from app.operations import add_matrices, mul_matrix, mul_matrices
-from app.solvers import get_inverse_matrix, get_left_inverse_matrix, get_right_inverse_matrix
+from app.solvers import get_inverse_matrix, get_left_inverse_matrix, get_right_inverse_matrix, get_determinant
 from app.system import LinearSystem
 from app.transformers import LinearSystemGaussTransformer
-
-
-def test_determinant():
-    a = np.array([
-        [1, 2, 3, 4],
-        [4, 3, 5, 1],
-        [5, 6, 7, 8],
-        [6, 5, 1, 2],
-    ])
-
-    a = np.random.rand(5, 5)
-
-    actual = get_determinant(a)
-    expected = np.linalg.det(a)
-
-    print(actual, expected, abs(expected - actual))
 
 
 def test_analysers():
@@ -74,8 +57,7 @@ def test_operations():
 
 
 if __name__ == '__main__':
-    test_determinant()
-    # test_analysers()
+    test_analysers()
     # test_operations()
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
