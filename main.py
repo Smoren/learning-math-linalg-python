@@ -73,36 +73,6 @@ def test_operations():
     print(mul_matrices(a, b))
 
 
-def test_linear_system_analyser():
-    A = np.array([
-        [0, 2, 0, 0],
-        [4, 0, 0, 0],
-        [0, 0, 0, 8],
-        [0, 0, 1, 0],
-    ], dtype=np.float64)
-    B = np.array([
-        [1],
-        [2],
-        [3],
-        [4],
-    ], dtype=np.float64)
-    linear_system = LinearSystem(A, B)
-
-    # transformer = LinearSystemGaussTransformer(linear_system)
-    # transformer.apply_gauss()
-    # print(linear_system)
-
-    analyser = LinearSystemAnalyser(linear_system)
-
-    B_expected = np.array([
-        [0.5],
-        [0.5],
-        [4],
-        [0.375],
-    ], dtype=np.float64)
-    print(analyser.is_solution(B_expected))
-
-
 def test_square_echelon_matrix_analyser():
     A = np.array([
         [0, 2, 3, 4],
@@ -132,7 +102,6 @@ if __name__ == '__main__':
     # test_gauss()
     # test_analysers()
     # test_operations()
-    # test_linear_system_analyser()
     # example_transform_matrix_add_row()
     # example_transform_matrix_mul_row()
     # example_transform_matrix_swap_rows()
