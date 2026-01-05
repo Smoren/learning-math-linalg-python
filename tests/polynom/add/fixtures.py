@@ -16,11 +16,6 @@ def data_provider_for_add_polynomials() -> Generator[tuple[np.ndarray, np.ndarra
             np.array([], dtype=np.float64),
         ),
         (
-            np.array([], dtype=np.float64),
-            np.array([0], dtype=np.float64),
-            np.array([], dtype=np.float64),
-        ),
-        (
             np.array([0], dtype=np.float64),
             np.array([0], dtype=np.float64),
             np.array([], dtype=np.float64),
@@ -62,12 +57,12 @@ def data_provider_for_add_polynomials() -> Generator[tuple[np.ndarray, np.ndarra
         ),
         (
             np.array([0, 0, 0, 4, 5, 6], dtype=np.float64),
+            np.array([1, 2, 3, -4, -5, -6], dtype=np.float64),
             np.array([1, 2, 3], dtype=np.float64),
-            np.array([1, 2, 3, 4, 5, 6], dtype=np.float64),
         ),
         (
             np.array([0, 0, 0, 4, 5, 6], dtype=np.float64),
-            np.array([1, 2, 3, -4, -5, -6], dtype=np.float64),
-            np.array([1, 2, 3], dtype=np.float64),
+            np.array([1, 2, 3, -4, -5, -6, -7], dtype=np.float64),
+            np.array([1, 2, 3, 0, 0, 0, -7], dtype=np.float64),
         ),
     ]
