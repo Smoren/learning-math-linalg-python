@@ -56,6 +56,10 @@ class MatrixPolynom:
                     terms.append(f"{coeff}X^{i}")
         return " + ".join(terms) if terms else "0"
 
+    @property
+    def coefficients(self) -> np.ndarray:
+        return self._coefficients.copy()
+
     @staticmethod
     def _trim_zeros(arr: np.ndarray):
         """Удаляет незначащие нули с конца."""
@@ -64,4 +68,4 @@ class MatrixPolynom:
         for i in range(len(arr) - 1, -1, -1):
             if arr[i] != 0:
                 return arr[:i + 1]
-        return np.array([0.0])
+        return np.array([], dtype=arr.dtype)
