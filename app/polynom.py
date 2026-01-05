@@ -65,7 +65,7 @@ class MatrixPolynom:
         """Удаляет незначащие нули с конца."""
         if len(arr) == 0:
             return arr
-        for i in range(len(arr) - 1, -1, -1):
+        for i in range(len(arr)-1, -1, -1):
             if arr[i] != 0:
-                return arr[:i + 1]
+                return arr[:i+1]
         return np.array([], dtype=arr.dtype)
