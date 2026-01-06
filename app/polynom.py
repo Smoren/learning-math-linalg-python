@@ -10,7 +10,7 @@ class MatrixPolynom:
         self._coefficients = self._normalize(coefficients)
 
     def __call__(self, X: np.ndarray):
-        assert X.ndim >= 2 and X.shape[0] == X.shape[1]
+        assert X.ndim >= 2 and np.array_equal(X.shape, np.full_like(X.shape, X.shape[0]))
 
         # Нативная реализация numpy
         # return np.polyval(np.array(self._coefficients), X)
