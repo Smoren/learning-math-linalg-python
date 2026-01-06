@@ -1,7 +1,5 @@
 import numpy as np
 
-from app.utils import is_zero
-
 
 # TODO test it
 class MatrixPolynom:
