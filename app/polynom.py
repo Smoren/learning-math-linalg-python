@@ -9,7 +9,7 @@ class MatrixPolynom:
 
     def __init__(self, coefficients: np.ndarray):
         assert coefficients.ndim == 1
-        self._coefficients = self._trim_zeros(coefficients)
+        self._coefficients = self._normalize(coefficients)
 
     def __call__(self, X: np.ndarray):
         assert X.ndim >= 2 and X.shape[0] == X.shape[1]
@@ -93,11 +93,11 @@ class MatrixPolynom:
         return self._coefficients.copy()
 
     @staticmethod
-    def _trim_zeros(arr: np.ndarray):
+    def _normalize(arr: np.ndarray):
         """Удаляет незначащие нули с конца."""
         if len(arr) == 0:
-            return arr
+            return np.array([0.0], dtype=arr.dtype)
         for i in range(len(arr)-1, -1, -1):
             if not is_zero(arr[i]):
                 return arr[:i+1]
-        return np.array([], dtype=arr.dtype)
+        return np.array([0.0], dtype=arr.dtype)

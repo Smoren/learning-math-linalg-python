@@ -8,17 +8,17 @@ def data_provider_for_add_polynomials() -> Generator[tuple[np.ndarray, np.ndarra
         (
             np.array([], dtype=np.float64),
             np.array([], dtype=np.float64),
-            np.array([], dtype=np.float64),
+            np.array([0], dtype=np.float64),
         ),
         (
             np.array([0], dtype=np.float64),
             np.array([], dtype=np.float64),
-            np.array([], dtype=np.float64),
+            np.array([0], dtype=np.float64),
         ),
         (
             np.array([0], dtype=np.float64),
             np.array([0], dtype=np.float64),
-            np.array([], dtype=np.float64),
+            np.array([0], dtype=np.float64),
         ),
         (
             np.array([1], dtype=np.float64),
