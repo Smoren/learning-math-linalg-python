@@ -30,6 +30,9 @@ class MatrixPolynom:
         return result
 
     def __add__(self, other: "MatrixPolynom"):
+        # Нативная реализация numpy
+        # return MatrixPolynom(np.polynomial.polynomial.polyadd(self._coefficients, other._coefficients))
+
         coefficients = np.zeros(max(self._coefficients.size, other._coefficients.size), dtype=np.result_type(self._coefficients, other._coefficients))
         coefficients[:self._coefficients.size] += self._coefficients
         coefficients[:other._coefficients.size] += other._coefficients
@@ -93,11 +96,9 @@ class MatrixPolynom:
         return self._coefficients.copy()
 
     @staticmethod
-    def _normalize(arr: np.ndarray):
-        """Удаляет незначащие нули с конца."""
-        if len(arr) == 0:
-            return np.array([0.0], dtype=arr.dtype)
-        for i in range(len(arr)-1, -1, -1):
-            if not is_zero(arr[i]):
-                return arr[:i+1]
-        return np.array([0.0], dtype=arr.dtype)
+    def _normalize(coefficients: np.ndarray):
+        # Убираем незначащие нули с конца массива
+        result = np.trim_zeros(coefficients, trim='b')
+
+        # Возвращаем результат (если массив пустой, добавляем нуль)
+        return result if len(result) > 0 else np.array([0.0], dtype=coefficients.dtype)
