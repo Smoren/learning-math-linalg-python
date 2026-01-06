@@ -14,6 +14,9 @@ class MatrixPolynom:
     def __call__(self, X: np.ndarray):
         assert X.ndim >= 2 and X.shape[0] == X.shape[1]
 
+        # Нативная реализация numpy
+        # return np.polyval(np.array(self._coefficients), X)
+
         if self._coefficients.size == 0:
             return np.zeros(X.shape)
 
@@ -26,8 +29,6 @@ class MatrixPolynom:
 
         return result
 
-        # return np.polyval(np.array(self._coefficients), X)
-
     def __add__(self, other: "MatrixPolynom"):
         coefficients = np.zeros(max(self._coefficients.size, other._coefficients.size), dtype=np.result_type(self._coefficients, other._coefficients))
         coefficients[:self._coefficients.size] += self._coefficients
@@ -35,6 +36,9 @@ class MatrixPolynom:
         return MatrixPolynom(coefficients)
 
     def __mul__(self, other: "MatrixPolynom"):
+        # Нативная реализация numpy
+        # return MatrixPolynom(np.convolve(self._coefficients, other._coefficients))
+
         # Получаем степени полиномов
         # m = deg(P), n = deg(Q)
         m, n = self.degree, other.degree
@@ -62,8 +66,6 @@ class MatrixPolynom:
             # i пробегает от 0 до k включительно, j автоматически равен k-i
             c = sum(self_coefficients[i] * other_coefficients[k-i] for i in range(k+1))
             coefficients[k] = c
-
-        # coefficients = np.convolve(self._coefficients, other._coefficients)
 
         # Создаём новый полином с вычисленными коэффициентами
         return MatrixPolynom(coefficients)
